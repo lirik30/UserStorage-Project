@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
 
 namespace UserStorageServices
 {
@@ -8,10 +10,16 @@ namespace UserStorageServices
     public class UserStorageService
     {
         /// <summary>
+        /// User store
+        /// </summary>
+        private HashSet<User> _storage = new HashSet<User>();
+
+        /// <summary>
         /// Gets the number of elements contained in the storage.
         /// </summary>
         /// <returns>An amount of users in the storage.</returns>
-        public int Count { get; }
+        public int Count => _storage.Count;
+
 
         /// <summary>
         /// Adds a new <see cref="User"/> to the storage.
@@ -28,6 +36,8 @@ namespace UserStorageServices
             {
                 throw new ArgumentException("FirstName is null or empty or whitespace", nameof(user));
             }
+
+            user.Id = Guid.NewGuid();
 
             // TODO: Implement Add() method and all other validation rules.
         }

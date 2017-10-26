@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Remoting.Messaging;
 
 namespace UserStorageServices
@@ -12,7 +13,7 @@ namespace UserStorageServices
         /// <summary>
         /// User store
         /// </summary>
-        private HashSet<User>  _storage = new HashSet<User>();
+        private HashSet<User> _storage = new HashSet<User>();
 
         /// <summary>
         /// Gets the number of elements contained in the storage.
@@ -70,12 +71,49 @@ namespace UserStorageServices
             _storage.Remove(user);
         }
 
+        public IEnumerable<User> SearchByFirstName(string firstName)
+        {
+            if (string.IsNullOrWhiteSpace(firstName))
+            {
+                throw new ArgumentException("FirstName is null or empty or whitespace");
+            }
+
+            return Search(user => user.FirstName == firstName);
+        }
+
+        public IEnumerable<User> SearchByLastName(string lastName)
+        {
+            if (string.IsNullOrWhiteSpace(lastName))
+            {
+                throw new ArgumentException("LastName is null or empty or whitespace");
+            }
+
+            return Search(user => user.LastName == lastName);
+        }
+
+        public IEnumerable<User> SearchByAge(int age)
+        {
+            if (age < 0)
+            {
+                throw new ArgumentException("Age is less than zero");
+            }
+
+            return Search(user => user.Age == age);
+        }
+
         /// <summary>
         /// Searches through the storage for a <see cref="User"/> that matches specified criteria.
         /// </summary>
-        public void Search()
+        public IEnumerable<User> Search(Func<User, bool> predicate)
         {
-            // TODO: Implement Search() method.
+            var searchResult = _storage.Where(x => predicate(x));
+
+            if (searchResult.Count() == 0)
+            {
+                // TODO: realize exception when the search result is empty
+            }
+
+            return searchResult;
         }
     }
 }

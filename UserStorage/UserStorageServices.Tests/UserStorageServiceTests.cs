@@ -6,6 +6,7 @@ namespace UserStorageServices.Tests
     [TestClass]
     public class UserStorageServiceTests
     {
+        #region Add Tests
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Add_NullAsUserArgument_ExceptionThrown()
@@ -25,7 +26,7 @@ namespace UserStorageServices.Tests
         {
             // Arrange
             var userStorageService = new UserStorageService();
-            
+
             // Act
             userStorageService.Add(new User
             {
@@ -73,6 +74,9 @@ namespace UserStorageServices.Tests
             // Assert - [ExpectedException]
         }
 
+        #endregion
+
+        #region Remove Tests
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Remove_NullAsUserArgument_ExceptionThrown()
@@ -98,5 +102,48 @@ namespace UserStorageServices.Tests
 
             // Assert - [ExpectedException]
         }
+        #endregion
+        
+        #region Search Tests
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Search_FirstNameIsNull_ExceptionThrows()
+        {
+            // Arrange
+            var userStorageService = new UserStorageService();
+
+            // Act
+            userStorageService.SearchByFirstName(null);
+
+            // Assert - [ExpectedException]
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Search_LastNameIsNull_ExceptionThrows()
+        {
+            // Arrange
+            var userStorageService = new UserStorageService();
+
+            // Act
+            userStorageService.SearchByLastName(null);
+
+            // Assert - [ExpectedException]
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Search_AgeIsLessThanZero_ExceptionThrows()
+        {
+            // Arrange
+            var userStorageService = new UserStorageService();
+
+            // Act
+            userStorageService.SearchByAge(-15);
+
+            // Assert - [ExpectedException]
+        }
+        #endregion
     }
 }

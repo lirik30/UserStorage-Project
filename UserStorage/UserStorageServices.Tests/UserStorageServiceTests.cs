@@ -74,8 +74,29 @@ namespace UserStorageServices.Tests
         }
 
         [TestMethod]
-        public void Remove_WithoutArguments_NothingHappen()
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void Remove_NullAsUserArgument_ExceptionThrown()
         {
+            // Arrange
+            var userStorageService = new UserStorageService();
+
+            // Act
+            userStorageService.Remove(null);
+
+            // Assert - [ExpectedException]
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidOperationException))]
+        public void Remove_UserDoesNotExist_ExceptionThrown()
+        {
+            // Arrange
+            var userStorageService = new UserStorageService();
+
+            // Act
+            userStorageService.Remove(new User());
+
+            // Assert - [ExpectedException]
         }
     }
 }

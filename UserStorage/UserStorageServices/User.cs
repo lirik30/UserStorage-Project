@@ -1,10 +1,17 @@
-﻿namespace UserStorageServices
+﻿using System;
+
+namespace UserStorageServices
 {
     /// <summary>
     /// Represents a user.
     /// </summary>
     public class User
     {
+        /// <summary>
+        /// Unique identifier of the user in the storage
+        /// </summary>
+        public Guid Id { get; set; }
+
         /// <summary>
         /// Gets or sets a user first name.
         /// </summary>

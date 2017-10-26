@@ -12,14 +12,13 @@ namespace UserStorageServices
         /// <summary>
         /// User store
         /// </summary>
-        private HashSet<User> _storage = new HashSet<User>();
+        private HashSet<User>  _storage = new HashSet<User>();
 
         /// <summary>
         /// Gets the number of elements contained in the storage.
         /// </summary>
         /// <returns>An amount of users in the storage.</returns>
         public int Count => _storage.Count;
-
 
         /// <summary>
         /// Adds a new <see cref="User"/> to the storage.
@@ -37,9 +36,18 @@ namespace UserStorageServices
                 throw new ArgumentException("FirstName is null or empty or whitespace", nameof(user));
             }
 
-            user.Id = Guid.NewGuid();
+            if (string.IsNullOrWhiteSpace(user.LastName))
+            {
+                throw new ArgumentException("LastName is null or empty or whitespace", nameof(user));
+            }
 
-            // TODO: Implement Add() method and all other validation rules.
+            if (user.Age < 0)
+            {
+                throw new ArgumentException("Age is less than zero", nameof(user));
+            }
+
+            user.Id = Guid.NewGuid();
+            _storage.Add(user);
         }
 
         /// <summary>

@@ -29,7 +29,45 @@ namespace UserStorageServices.Tests
             // Act
             userStorageService.Add(new User
             {
-                FirstName = null
+                FirstName = null,
+                LastName = "name",
+                Age = 1
+            });
+
+            // Assert - [ExpectedException]
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Add_UserLastNameIsNull_ExceptionThrown()
+        {
+            // Arrange
+            var userStorageService = new UserStorageService();
+
+            // Act
+            userStorageService.Add(new User
+            {
+                LastName = null,
+                FirstName = "name",
+                Age = 1
+            });
+
+            // Assert - [ExpectedException]
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void Add_UserAgeIsLessThanZero_ExceptionThrown()
+        {
+            // Arrange
+            var userStorageService = new UserStorageService();
+
+            // Act
+            userStorageService.Add(new User
+            {
+                FirstName = "name",
+                LastName = "name",
+                Age = -10
             });
 
             // Assert - [ExpectedException]

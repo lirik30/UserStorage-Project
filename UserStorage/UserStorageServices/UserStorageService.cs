@@ -15,6 +15,8 @@ namespace UserStorageServices
         /// </summary>
         private HashSet<User> _storage = new HashSet<User>();
 
+        public bool IsLoggingEnabled { get; set; }
+
         /// <summary>
         /// Gets the number of elements contained in the storage.
         /// </summary>
@@ -27,6 +29,11 @@ namespace UserStorageServices
         /// <param name="user">A new <see cref="User"/> that will be added to the storage.</param>
         public void Add(User user)
         {
+            if (IsLoggingEnabled)
+            {
+                Console.WriteLine("Add() method is called.");
+            }
+
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -56,6 +63,11 @@ namespace UserStorageServices
         /// </summary>
         public void Remove(User user)
         {
+            if (IsLoggingEnabled)
+            {
+                Console.WriteLine("Remove() method is called.");
+            }
+
             if (user == null)
             {
                 throw new ArgumentNullException(nameof(user));
@@ -73,6 +85,11 @@ namespace UserStorageServices
 
         public IEnumerable<User> SearchByFirstName(string firstName)
         {
+            if (IsLoggingEnabled)
+            {
+                Console.WriteLine("SearchByFirstName() method is called.");
+            }
+
             if (string.IsNullOrWhiteSpace(firstName))
             {
                 throw new ArgumentException("FirstName is null or empty or whitespace");
@@ -83,6 +100,11 @@ namespace UserStorageServices
 
         public IEnumerable<User> SearchByLastName(string lastName)
         {
+            if (IsLoggingEnabled)
+            {
+                Console.WriteLine("SearchByLastName() method is called.");
+            }
+
             if (string.IsNullOrWhiteSpace(lastName))
             {
                 throw new ArgumentException("LastName is null or empty or whitespace");
@@ -93,6 +115,11 @@ namespace UserStorageServices
 
         public IEnumerable<User> SearchByAge(int age)
         {
+            if (IsLoggingEnabled)
+            {
+                Console.WriteLine("SearchByAge() method is called.");
+            }
+
             if (age < 0)
             {
                 throw new ArgumentException("Age is less than zero");

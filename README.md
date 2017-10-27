@@ -141,7 +141,7 @@ The [class diagram](http://www.uml-diagrams.org/class-diagrams-overview.html) be
 ![Client and UserStorageService](images/ClientAndServiceBeginning.png "Client and UserStorageService")
 
 
-- [ ] [Create a new branch](https://git-scm.com/book/ru/v1/Ветвление-в-Git-Основы-ветвления-и-слияния) with name "step1", and switch to this branch. Make sure that you are on "step1" branch before continue.
+- [x] [Create a new branch](https://git-scm.com/book/ru/v1/Ветвление-в-Git-Основы-ветвления-и-слияния) with name "step1", and switch to this branch. Make sure that you are on "step1" branch before continue.
 
 ```sh
 $ git checkout -b step1

@@ -11,11 +11,6 @@ namespace UserStorageServices
     /// </summary>
     public class UserStorageService : IUserStorageService
     {
-        /// <summary>
-        /// User store
-        /// </summary>
-        private HashSet<User> _storage = new HashSet<User>();
-
         private readonly BooleanSwitch loggingSwitch = new BooleanSwitch("enableLogging", "Switch for enable/disable logging");
 
         /// <summary>
@@ -28,8 +23,14 @@ namespace UserStorageServices
         /// </summary>
         private readonly IUserValidator _validator;
 
-        public UserStorageService(IGenerateIdentifier identifier = null, 
-                                  IUserValidator validator = null)
+        /// <summary>
+        /// User store
+        /// </summary>
+        private HashSet<User> _storage = new HashSet<User>();
+
+        public UserStorageService(
+            IGenerateIdentifier identifier = null, 
+            IUserValidator validator = null)
         {
             _identifier = identifier ?? new GuidGenerate();
             _validator = validator ?? new UserValidator();
@@ -83,11 +84,10 @@ namespace UserStorageServices
             _storage.Remove(user);
         }
 
-
         /// <summary>
         /// Search through the storage for the users with the same first name
         /// </summary>
-        /// <param name="firstName">First name </param>
+        /// <param name="firstName">First name for the search</param>
         /// <returns>Set of the users</returns>
         public IEnumerable<User> SearchByFirstName(string firstName)
         {
@@ -127,7 +127,7 @@ namespace UserStorageServices
         /// <summary>
         /// Search through the storage for the users with the same age
         /// </summary>
-        /// <param name="age">Age for the searchr</param>
+        /// <param name="age">Age for the search</param>
         /// <returns>Set of the users</returns>
         public IEnumerable<User> SearchByAge(int age)
         {

@@ -11,9 +11,13 @@ namespace UserStorageServices
         int Count { get; }
 
         void Add(User user);
+
         void Remove(User user);
+
         IEnumerable<User> SearchByFirstName(string firstName);
+
         IEnumerable<User> SearchByLastName(string lastName);
+
         IEnumerable<User> SearchByAge(int age);
     }
 }

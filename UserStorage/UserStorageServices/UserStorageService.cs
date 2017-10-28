@@ -15,11 +15,14 @@ namespace UserStorageServices
         /// </summary>
         private HashSet<User> _storage = new HashSet<User>();
 
-        private IGenerateIdentifier _identifier;
+        private readonly IGenerateIdentifier _identifier;
+        private readonly IUserValidator _validator;
 
-        public UserStorageService(IGenerateIdentifier identifier)
+        public UserStorageService(IGenerateIdentifier identifier = null, 
+                                  IUserValidator validator = null)
         {
-            _identifier = identifier;
+            _identifier = identifier ?? new GuidGenerate();
+            _validator = validator ?? new UserValidator();
         }
 
         public bool IsLoggingEnabled { get; set; }
@@ -41,25 +44,7 @@ namespace UserStorageServices
                 Console.WriteLine("Add() method is called.");
             }
 
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
-
-            if (string.IsNullOrWhiteSpace(user.FirstName))
-            {
-                throw new ArgumentException("FirstName is null or empty or whitespace", nameof(user));
-            }
-
-            if (string.IsNullOrWhiteSpace(user.LastName))
-            {
-                throw new ArgumentException("LastName is null or empty or whitespace", nameof(user));
-            }
-
-            if (user.Age < 0)
-            {
-                throw new ArgumentException("Age is less than zero", nameof(user));
-            }
+            _validator.Validate(user);
 
             user.Id = _identifier.Generate();
             _storage.Add(user);

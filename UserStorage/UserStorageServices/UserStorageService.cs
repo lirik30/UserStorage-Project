@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 
@@ -8,14 +9,32 @@ namespace UserStorageServices
     /// <summary>
     /// Represents a service that stores a set of <see cref="User"/>s and allows to search through them.
     /// </summary>
-    public class UserStorageService
+    public class UserStorageService : IUserStorageService
     {
+        private readonly BooleanSwitch loggingSwitch = new BooleanSwitch("enableLogging", "Switch for enable/disable logging");
+
+        /// <summary>
+        /// Provides an identifier generation strategy
+        /// </summary>
+        private readonly IGenerateIdentifier _identifier;
+
+        /// <summary>
+        /// Provides a validation strategy
+        /// </summary>
+        private readonly IUserValidator _validator;
+
         /// <summary>
         /// User store
         /// </summary>
         private HashSet<User> _storage = new HashSet<User>();
 
-        public bool IsLoggingEnabled { get; set; }
+        public UserStorageService(
+            IGenerateIdentifier identifier = null, 
+            IUserValidator validator = null)
+        {
+            _identifier = identifier ?? new GuidGenerate();
+            _validator = validator ?? new UserValidator();
+        }
 
         /// <summary>
         /// Gets the number of elements contained in the storage.
@@ -29,32 +48,14 @@ namespace UserStorageServices
         /// <param name="user">A new <see cref="User"/> that will be added to the storage.</param>
         public void Add(User user)
         {
-            if (IsLoggingEnabled)
+            if (loggingSwitch.Enabled)
             {
                 Console.WriteLine("Add() method is called.");
             }
 
-            if (user == null)
-            {
-                throw new ArgumentNullException(nameof(user));
-            }
+            _validator.Validate(user);
 
-            if (string.IsNullOrWhiteSpace(user.FirstName))
-            {
-                throw new ArgumentException("FirstName is null or empty or whitespace", nameof(user));
-            }
-
-            if (string.IsNullOrWhiteSpace(user.LastName))
-            {
-                throw new ArgumentException("LastName is null or empty or whitespace", nameof(user));
-            }
-
-            if (user.Age < 0)
-            {
-                throw new ArgumentException("Age is less than zero", nameof(user));
-            }
-
-            user.Id = Guid.NewGuid();
+            user.Id = _identifier.Generate();
             _storage.Add(user);
         }
 
@@ -63,7 +64,7 @@ namespace UserStorageServices
         /// </summary>
         public void Remove(User user)
         {
-            if (IsLoggingEnabled)
+            if (loggingSwitch.Enabled)
             {
                 Console.WriteLine("Remove() method is called.");
             }
@@ -83,9 +84,14 @@ namespace UserStorageServices
             _storage.Remove(user);
         }
 
+        /// <summary>
+        /// Search through the storage for the users with the same first name
+        /// </summary>
+        /// <param name="firstName">First name for the search</param>
+        /// <returns>Set of the users</returns>
         public IEnumerable<User> SearchByFirstName(string firstName)
         {
-            if (IsLoggingEnabled)
+            if (loggingSwitch.Enabled)
             {
                 Console.WriteLine("SearchByFirstName() method is called.");
             }
@@ -98,9 +104,14 @@ namespace UserStorageServices
             return Search(user => user.FirstName == firstName);
         }
 
+        /// <summary>
+        /// Search through the storage for the users with the same last name
+        /// </summary>
+        /// <param name="lastName">Last name for the search</param>
+        /// <returns>Set of the users</returns>
         public IEnumerable<User> SearchByLastName(string lastName)
         {
-            if (IsLoggingEnabled)
+            if (loggingSwitch.Enabled)
             {
                 Console.WriteLine("SearchByLastName() method is called.");
             }
@@ -113,9 +124,14 @@ namespace UserStorageServices
             return Search(user => user.LastName == lastName);
         }
 
+        /// <summary>
+        /// Search through the storage for the users with the same age
+        /// </summary>
+        /// <param name="age">Age for the search</param>
+        /// <returns>Set of the users</returns>
         public IEnumerable<User> SearchByAge(int age)
         {
-            if (IsLoggingEnabled)
+            if (loggingSwitch.Enabled)
             {
                 Console.WriteLine("SearchByAge() method is called.");
             }
@@ -131,13 +147,13 @@ namespace UserStorageServices
         /// <summary>
         /// Searches through the storage for a <see cref="User"/> that matches specified criteria.
         /// </summary>
-        public IEnumerable<User> Search(Func<User, bool> predicate)
+        private IEnumerable<User> Search(Func<User, bool> predicate)
         {
-            var searchResult = _storage.Where(x => predicate(x));
+            var searchResult = _storage.Where(predicate);
 
             if (searchResult.Count() == 0)
             {
-                // TODO: realize exception when the search result is empty
+                // TODO: realize exception when the search result is empty. or not
             }
 
             return searchResult;

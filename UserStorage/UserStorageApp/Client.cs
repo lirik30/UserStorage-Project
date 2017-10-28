@@ -7,14 +7,14 @@ namespace UserStorageApp
     /// </summary>
     public class Client
     {
-        private readonly UserStorageService _userStorageService;
+        private readonly IUserStorageService _userStorageService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
         /// </summary>
-        public Client()
+        public Client(IUserStorageService userStorageService = null)
         {
-            _userStorageService = new UserStorageService();
+            _userStorageService = userStorageService ?? new UserStorageService();
         }
 
         /// <summary>
@@ -29,9 +29,14 @@ namespace UserStorageApp
                 Age = 25
             });
 
-            _userStorageService.Remove();
+            _userStorageService.Remove(new User
+            {
+                FirstName = "Alex",
+                LastName = "Black",
+                Age = 25
+            });
 
-            _userStorageService.Search();
+            _userStorageService.SearchByFirstName("Alex");
         }
     }
 }

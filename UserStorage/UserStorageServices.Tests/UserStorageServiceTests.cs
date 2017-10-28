@@ -11,7 +11,7 @@ namespace UserStorageServices.Tests
         public void Add_NullAsUserArgument_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageService(new GuidGenerate());
 
             // Act
             userStorageService.Add(null);
@@ -24,7 +24,7 @@ namespace UserStorageServices.Tests
         public void Add_UserFirstNameIsNull_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageService(new GuidGenerate());
 
             // Act
             userStorageService.Add(new User
@@ -42,7 +42,7 @@ namespace UserStorageServices.Tests
         public void Add_UserLastNameIsNull_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageService(new GuidGenerate());
 
             // Act
             userStorageService.Add(new User
@@ -60,7 +60,7 @@ namespace UserStorageServices.Tests
         public void Add_UserAgeIsLessThanZero_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageService(new GuidGenerate());
 
             // Act
             userStorageService.Add(new User
@@ -78,7 +78,7 @@ namespace UserStorageServices.Tests
         public void Remove_NullAsUserArgument_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageService(new GuidGenerate());
 
             // Act
             userStorageService.Remove(null);
@@ -91,7 +91,7 @@ namespace UserStorageServices.Tests
         public void Remove_UserDoesNotExist_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageService(new GuidGenerate());
 
             // Act
             userStorageService.Remove(new User());
@@ -104,7 +104,7 @@ namespace UserStorageServices.Tests
         public void Search_FirstNameIsNull_ExceptionThrows()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageService(new GuidGenerate());
 
             // Act
             userStorageService.SearchByFirstName(null);
@@ -117,7 +117,7 @@ namespace UserStorageServices.Tests
         public void Search_LastNameIsNull_ExceptionThrows()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageService(new GuidGenerate());
 
             // Act
             userStorageService.SearchByLastName(null);
@@ -130,7 +130,7 @@ namespace UserStorageServices.Tests
         public void Search_AgeIsLessThanZero_ExceptionThrows()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageService(new GuidGenerate());
 
             // Act
             userStorageService.SearchByAge(-15);

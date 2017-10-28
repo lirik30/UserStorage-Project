@@ -15,6 +15,13 @@ namespace UserStorageServices
         /// </summary>
         private HashSet<User> _storage = new HashSet<User>();
 
+        private IGenerateIdentifier _identifier;
+
+        public UserStorageService(IGenerateIdentifier identifier)
+        {
+            _identifier = identifier;
+        }
+
         public bool IsLoggingEnabled { get; set; }
 
         /// <summary>
@@ -54,7 +61,7 @@ namespace UserStorageServices
                 throw new ArgumentException("Age is less than zero", nameof(user));
             }
 
-            user.Id = Guid.NewGuid();
+            user.Id = _identifier.Generate();
             _storage.Add(user);
         }
 

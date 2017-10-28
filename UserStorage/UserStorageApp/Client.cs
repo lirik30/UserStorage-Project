@@ -14,7 +14,7 @@ namespace UserStorageApp
         /// </summary>
         public Client()
         {
-            _userStorageService = new UserStorageService();
+            _userStorageService = new UserStorageService(new GuidGenerate());
         }
 
         /// <summary>
@@ -29,9 +29,14 @@ namespace UserStorageApp
                 Age = 25
             });
 
-            _userStorageService.Remove();
+            _userStorageService.Remove(new User
+            {
+                FirstName = "Alex",
+                LastName = "Black",
+                Age = 25
+            });
 
-            _userStorageService.Search();
+            _userStorageService.SearchByFirstName("Alex");
         }
     }
 }

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace UserStorageServices
 {
+    /// <summary>
+    /// Strategy of the identifier generation
+    /// </summary>
     public class GuidGenerate : IGenerateIdentifier
     {
         public Guid Generate()

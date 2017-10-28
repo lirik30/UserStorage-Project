@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="GuidGenerate.cs" />
     <Compile Include="IGenerateIdentifier.cs" />
+    <Compile Include="IUserStorageService.cs" />
     <Compile Include="IUserValidator.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserStorageService.cs" />

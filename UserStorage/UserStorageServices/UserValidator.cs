@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace UserStorageServices
 {
+    /// <summary>
+    /// Strategy of validation
+    /// </summary>
     public class UserValidator : IUserValidator
     {
         public void Validate(User user)

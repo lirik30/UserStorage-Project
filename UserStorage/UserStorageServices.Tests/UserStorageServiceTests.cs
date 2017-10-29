@@ -218,6 +218,26 @@ namespace UserStorageServices.Tests
         {
             // Arrange
             var userStorageService = new UserStorageService();
+            userStorageService.Add(new User
+            {
+                FirstName = "Pavel",
+                LastName = "Pavlov",
+                Age = 25
+            });
+
+            userStorageService.Add(new User
+            {
+                FirstName = "Andrey",
+                LastName = "Andreev",
+                Age = 40
+            });
+
+            userStorageService.Add(new User
+            {
+                FirstName = "Nikita",
+                LastName = "Nikitin",
+                Age = 25
+            });
 
             // Act
             userStorageService.Search(null);
@@ -230,6 +250,26 @@ namespace UserStorageServices.Tests
         {
             // Arrange
             var userStorageService = new UserStorageService();
+            userStorageService.Add(new User
+            {
+                FirstName = "Pavel",
+                LastName = "Pavlov",
+                Age = 25
+            });
+
+            userStorageService.Add(new User
+            {
+                FirstName = "Andrey",
+                LastName = "Andreev",
+                Age = 40
+            });
+
+            userStorageService.Add(new User
+            {
+                FirstName = "Nikita",
+                LastName = "Nikitin",
+                Age = 25
+            });
 
             // Act
             var result = userStorageService.Search(u => u.LastName == null);
@@ -243,6 +283,26 @@ namespace UserStorageServices.Tests
         {
             // Arrange
             var userStorageService = new UserStorageService();
+            userStorageService.Add(new User
+            {
+                FirstName = "Pavel",
+                LastName = "Pavlov",
+                Age = 25
+            });
+
+            userStorageService.Add(new User
+            {
+                FirstName = "Andrey",
+                LastName = "Andreev",
+                Age = 40
+            });
+
+            userStorageService.Add(new User
+            {
+                FirstName = "Nikita",
+                LastName = "Nikitin",
+                Age = 25
+            });
 
             // Act
             var result = userStorageService.Search(u => u.Age == -15 && u.FirstName == "Somename");

@@ -29,6 +29,8 @@ namespace UserStorageApp
                 Age = 25
             });
 
+            int a = _userStorageService.Count;
+
             _userStorageService.Remove(new User
             {
                 FirstName = "Alex",

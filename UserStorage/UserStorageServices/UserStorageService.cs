@@ -13,8 +13,6 @@ namespace UserStorageServices
     /// </summary>
     public class UserStorageService : IUserStorageService
     {
-        private readonly BooleanSwitch _loggingSwitch = new BooleanSwitch("enableLogging", "Switch for enable/disable logging");
-
         /// <summary>
         /// Provides an identifier generation strategy
         /// </summary>
@@ -50,11 +48,6 @@ namespace UserStorageServices
         /// <param name="user">A new <see cref="User"/> that will be added to the storage.</param>
         public void Add(User user)
         {
-            if (_loggingSwitch.Enabled)
-            {
-                Console.WriteLine("Add() method is called.");
-            }
-
             _validator.Validate(user);
 
             user.Id = _identifier.Generate();
@@ -66,11 +59,6 @@ namespace UserStorageServices
         /// </summary>
         public void Remove(User user)
         {
-            if (_loggingSwitch.Enabled)
-            {
-                Console.WriteLine("Remove() method is called.");
-            }
-
             if (user == null)
             {
                 throw new UserIsNullException("User cannot be null");

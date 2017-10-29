@@ -33,7 +33,7 @@ namespace UserStorageServices
             IUserValidator validator = null)
         {
             _identifier = identifier ?? new GuidGenerate();
-            _validator = validator ?? new UserValidator();
+            _validator = validator ?? new CompositeValidator(new IUserValidator[]{new AgeValidator(), new LastNameValidator(), new FirstNameValidator()});
         }
 
         /// <summary>

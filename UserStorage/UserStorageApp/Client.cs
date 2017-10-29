@@ -29,6 +29,8 @@ namespace UserStorageApp
                 Age = 25
             });
 
+            int a = _userStorageService.Count;
+
             _userStorageService.Remove(new User
             {
                 FirstName = "Alex",
@@ -36,7 +38,7 @@ namespace UserStorageApp
                 Age = 25
             });
 
-            _userStorageService.SearchByFirstName("Alex");
+            _userStorageService.Search(u => u.FirstName == "Alex");
         }
     }
 }

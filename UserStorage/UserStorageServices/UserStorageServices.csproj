@@ -57,7 +57,14 @@
     <Compile Include="User.cs" />
     <Compile Include="UserStorageService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Validation exceptions\AgeExceedsLimitException.cs" />
+    <Compile Include="Validation exceptions\FirstNameExceedsLimitException.cs" />
+    <Compile Include="Validation exceptions\FirstNameIsNullOrEmptyException.cs" />
+    <Compile Include="Validation exceptions\LastNameExceedsLimitException.cs" />
+    <Compile Include="Validation exceptions\LastNameIsNullOrEmptyException.cs" />
+    <Compile Include="Validation exceptions\UserIsNullException.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

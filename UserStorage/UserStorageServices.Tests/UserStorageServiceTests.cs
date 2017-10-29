@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices.Tests
 {
@@ -7,7 +8,7 @@ namespace UserStorageServices.Tests
     public class UserStorageServiceTests
     {
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(UserIsNullException))]
         public void Add_NullAsUserArgument_ExceptionThrown()
         {
             // Arrange
@@ -20,7 +21,7 @@ namespace UserStorageServices.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(FirstNameIsNullOrEmptyException))]
         public void Add_UserFirstNameIsNull_ExceptionThrown()
         {
             // Arrange
@@ -38,7 +39,7 @@ namespace UserStorageServices.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(LastNameIsNullOrEmptyException))]
         public void Add_UserLastNameIsNull_ExceptionThrown()
         {
             // Arrange
@@ -56,7 +57,7 @@ namespace UserStorageServices.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(AgeExceedsLimitException))]
         public void Add_UserAgeIsLessThanZero_ExceptionThrown()
         {
             // Arrange
@@ -74,7 +75,7 @@ namespace UserStorageServices.Tests
         }
         
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
+        [ExpectedException(typeof(UserIsNullException))]
         public void Remove_NullAsUserArgument_ExceptionThrown()
         {
             // Arrange
@@ -100,7 +101,7 @@ namespace UserStorageServices.Tests
         }
         
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(FirstNameIsNullOrEmptyException))]
         public void Search_FirstNameIsNull_ExceptionThrows()
         {
             // Arrange
@@ -113,7 +114,7 @@ namespace UserStorageServices.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(LastNameIsNullOrEmptyException))]
         public void Search_LastNameIsNull_ExceptionThrows()
         {
             // Arrange
@@ -126,7 +127,7 @@ namespace UserStorageServices.Tests
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
+        [ExpectedException(typeof(AgeExceedsLimitException))]
         public void Search_AgeIsLessThanZero_ExceptionThrows()
         {
             // Arrange

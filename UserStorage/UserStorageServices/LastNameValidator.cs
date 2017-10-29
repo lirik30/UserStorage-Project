@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices
 {
@@ -12,7 +13,11 @@ namespace UserStorageServices
         {
             if (string.IsNullOrWhiteSpace(user.LastName))
             {
-                throw new ArgumentException("LastName is null or empty or whitespace", nameof(user));
+                throw new LastNameIsNullOrEmptyException("Last name of user is null or empty or whitespace");
+            }
+            if (user.LastName.Length > 50)
+            {
+                throw new LastNameIsNullOrEmptyException("Last name of user must be less than 50 symbols");
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
+using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices
 {
@@ -71,7 +72,7 @@ namespace UserStorageServices
 
             if (user == null)
             {
-                throw new ArgumentNullException(nameof(user));
+                throw new UserIsNullException("User cannot be null");
             }
 
             var storageContainsUser = _storage.Contains(user);
@@ -98,7 +99,7 @@ namespace UserStorageServices
 
             if (string.IsNullOrWhiteSpace(firstName))
             {
-                throw new ArgumentException("FirstName is null or empty or whitespace");
+                throw new FirstNameIsNullOrEmptyException("FirstName is null or empty or whitespace");
             }
 
             return Search(user => user.FirstName == firstName);
@@ -118,7 +119,7 @@ namespace UserStorageServices
 
             if (string.IsNullOrWhiteSpace(lastName))
             {
-                throw new ArgumentException("LastName is null or empty or whitespace");
+                throw new LastNameIsNullOrEmptyException("LastName is null or empty or whitespace");
             }
 
             return Search(user => user.LastName == lastName);
@@ -138,7 +139,7 @@ namespace UserStorageServices
 
             if (age < 0)
             {
-                throw new ArgumentException("Age is less than zero");
+                throw new AgeExceedsLimitException("Age is less than zero");
             }
 
             return Search(user => user.Age == age);

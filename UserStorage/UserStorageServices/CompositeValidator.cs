@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices
 {
@@ -18,6 +19,10 @@ namespace UserStorageServices
 
         public void Validate(User user)
         {
+            if (user == null)
+            {
+                throw new UserIsNullException("User cannot be null");
+            }
             foreach (var validator in _validators)
             {
                 validator.Validate(user);

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.Remoting.Messaging;
 using UserStorageServices.Validation_exceptions;
 
@@ -12,7 +13,7 @@ namespace UserStorageServices
     /// </summary>
     public class UserStorageService : IUserStorageService
     {
-        private readonly BooleanSwitch loggingSwitch = new BooleanSwitch("enableLogging", "Switch for enable/disable logging");
+        private readonly BooleanSwitch _loggingSwitch = new BooleanSwitch("enableLogging", "Switch for enable/disable logging");
 
         /// <summary>
         /// Provides an identifier generation strategy
@@ -49,7 +50,7 @@ namespace UserStorageServices
         /// <param name="user">A new <see cref="User"/> that will be added to the storage.</param>
         public void Add(User user)
         {
-            if (loggingSwitch.Enabled)
+            if (_loggingSwitch.Enabled)
             {
                 Console.WriteLine("Add() method is called.");
             }
@@ -65,7 +66,7 @@ namespace UserStorageServices
         /// </summary>
         public void Remove(User user)
         {
-            if (loggingSwitch.Enabled)
+            if (_loggingSwitch.Enabled)
             {
                 Console.WriteLine("Remove() method is called.");
             }
@@ -75,87 +76,32 @@ namespace UserStorageServices
                 throw new UserIsNullException("User cannot be null");
             }
 
-            var storageContainsUser = _storage.Contains(user);
+            var resultUsers = 
+                Search(u => u.FirstName == user.FirstName && u.LastName == user.LastName && u.Age == user.Age);
 
-            if (!storageContainsUser)
+            if (!resultUsers.Any())
             {
-                throw new InvalidOperationException("There is no record of such user in the storage");
+                throw new ArgumentException("There is no record of such user in the storage");
             }
 
-            _storage.Remove(user);
-        }
-
-        /// <summary>
-        /// Search through the storage for the users with the same first name
-        /// </summary>
-        /// <param name="firstName">First name for the search</param>
-        /// <returns>Set of the users</returns>
-        public IEnumerable<User> SearchByFirstName(string firstName)
-        {
-            if (loggingSwitch.Enabled)
+            if (resultUsers.Count() != 1)
             {
-                Console.WriteLine("SearchByFirstName() method is called.");
+                throw new InvalidOperationException("Operation is invalid. Multiple choices possible");
             }
 
-            if (string.IsNullOrWhiteSpace(firstName))
-            {
-                throw new FirstNameIsNullOrEmptyException("FirstName is null or empty or whitespace");
-            }
-
-            return Search(user => user.FirstName == firstName);
-        }
-
-        /// <summary>
-        /// Search through the storage for the users with the same last name
-        /// </summary>
-        /// <param name="lastName">Last name for the search</param>
-        /// <returns>Set of the users</returns>
-        public IEnumerable<User> SearchByLastName(string lastName)
-        {
-            if (loggingSwitch.Enabled)
-            {
-                Console.WriteLine("SearchByLastName() method is called.");
-            }
-
-            if (string.IsNullOrWhiteSpace(lastName))
-            {
-                throw new LastNameIsNullOrEmptyException("LastName is null or empty or whitespace");
-            }
-
-            return Search(user => user.LastName == lastName);
-        }
-
-        /// <summary>
-        /// Search through the storage for the users with the same age
-        /// </summary>
-        /// <param name="age">Age for the search</param>
-        /// <returns>Set of the users</returns>
-        public IEnumerable<User> SearchByAge(int age)
-        {
-            if (loggingSwitch.Enabled)
-            {
-                Console.WriteLine("SearchByAge() method is called.");
-            }
-
-            if (age < 0)
-            {
-                throw new AgeExceedsLimitException("Age is less than zero");
-            }
-
-            return Search(user => user.Age == age);
+            _storage.Remove(resultUsers.First());
         }
 
         /// <summary>
         /// Searches through the storage for a <see cref="User"/> that matches specified criteria.
         /// </summary>
-        private IEnumerable<User> Search(Func<User, bool> predicate)
+        public IEnumerable<User> Search(Func<User, bool> predicate)
         {
-            var searchResult = _storage.Where(predicate);
-
-            if (searchResult.Count() == 0)
+            if (predicate == null)
             {
-                // TODO: realize exception when the search result is empty. or not
+                throw new ArgumentNullException(nameof(predicate), "Predicate must be not null");
             }
+            var searchResult = _storage.Where(predicate);
 
             return searchResult;
         }

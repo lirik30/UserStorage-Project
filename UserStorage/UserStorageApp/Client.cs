@@ -36,7 +36,7 @@ namespace UserStorageApp
                 Age = 25
             });
 
-            _userStorageService.SearchByFirstName("Alex");
+            _userStorageService.Search(u => u.FirstName == "Alex");
         }
     }
 }

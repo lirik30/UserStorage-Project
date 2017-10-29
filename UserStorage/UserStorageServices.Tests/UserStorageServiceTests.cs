@@ -82,7 +82,7 @@ namespace UserStorageServices.Tests
             // Arrange
             var userStorageService = new UserStorageService();
 
-            //Act
+            // Act
             userStorageService.Add(new User
             {
                 FirstName = "Pavel",
@@ -211,7 +211,7 @@ namespace UserStorageServices.Tests
             Assert.AreEqual(2, userStorageService.Count);
         }
 
-        //Search tests
+        // Search tests
         [TestMethod]
         [ExpectedException(typeof(ArgumentNullException))]
         public void Search_PredicateIsNull_ExceptionThrows()

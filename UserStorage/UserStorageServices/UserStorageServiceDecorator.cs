@@ -8,28 +8,28 @@ namespace UserStorageServices
 {
     public abstract class UserStorageServiceDecorator : IUserStorageService
     {
-        protected readonly IUserStorageService _wrappee;
+        protected readonly IUserStorageService Wrappee;
 
         protected UserStorageServiceDecorator(IUserStorageService wrappee = null)
         {
-            _wrappee = wrappee ?? new UserStorageService();
+            this.Wrappee = wrappee ?? new UserStorageService();
         }
 
-        public virtual int Count => _wrappee.Count;
+        public virtual int Count => Wrappee.Count;
 
         public virtual void Add(User user)
         {
-            _wrappee.Add(user);
+            Wrappee.Add(user);
         }
 
         public virtual void Remove(User user)
         {
-            _wrappee.Remove(user);
+            Wrappee.Remove(user);
         }
 
         public virtual IEnumerable<User> Search(Func<User, bool> predicate)
         {
-            return _wrappee.Search(predicate);
+            return Wrappee.Search(predicate);
         }
     }
 }

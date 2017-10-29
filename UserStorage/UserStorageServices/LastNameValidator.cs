@@ -15,6 +15,7 @@ namespace UserStorageServices
             {
                 throw new LastNameIsNullOrEmptyException("Last name of user is null or empty or whitespace");
             }
+
             if (user.LastName.Length > 50)
             {
                 throw new LastNameIsNullOrEmptyException("Last name of user must be less than 50 symbols");

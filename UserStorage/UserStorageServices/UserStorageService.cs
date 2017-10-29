@@ -33,7 +33,7 @@ namespace UserStorageServices
             IUserValidator validator = null)
         {
             _identifier = identifier ?? new GuidGenerate();
-            _validator = validator ?? new CompositeValidator(new IUserValidator[]{new AgeValidator(), new LastNameValidator(), new FirstNameValidator()});
+            _validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
         }
 
         /// <summary>
@@ -89,6 +89,7 @@ namespace UserStorageServices
             {
                 throw new ArgumentNullException(nameof(predicate), "Predicate must be not null");
             }
+
             var searchResult = _storage.Where(predicate);
 
             return searchResult;

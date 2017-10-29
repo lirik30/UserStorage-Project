@@ -18,7 +18,7 @@ namespace UserStorageServices
             {
                 if (_loggingSwitch.Enabled)
                 {
-                    Console.WriteLine("Count property is called.");
+                    Trace.TraceInformation("Count property is called.");
                 }
                 return base.Count;
             }
@@ -28,7 +28,7 @@ namespace UserStorageServices
         {
             if (_loggingSwitch.Enabled)
             {
-                Console.WriteLine("Add() method is called.");
+                Trace.TraceInformation("Add() method is called.");
             }
             base.Add(user);
         }
@@ -37,7 +37,7 @@ namespace UserStorageServices
         {
             if (_loggingSwitch.Enabled)
             {
-                Console.WriteLine("Remove() method is called.");
+                Trace.TraceInformation("Remove() method is called.");
             }
             base.Remove(user);
         }
@@ -46,7 +46,7 @@ namespace UserStorageServices
         {
             if (_loggingSwitch.Enabled)
             {
-                Console.WriteLine("Search() method is called.");
+                Trace.TraceInformation("Search() method is called.");
             }
             return base.Search(predicate);
         }

@@ -20,8 +20,15 @@ namespace UserStorageServices
     /// </summary>
     public class UserStorageService : IUserStorageService
     {
-
+        /// <summary>
+        /// Master or slave mode of the storage
+        /// </summary>
         private readonly StorageMode _storageMode;
+
+        /// <summary>
+        /// Subscribers of the UserStorageService
+        /// </summary>
+        private List<ISubscriber> _subscribers;
 
         /// <summary>
         /// Provides an identifier generation strategy
@@ -49,6 +56,7 @@ namespace UserStorageServices
             IGenerateIdentifier identifier = null, 
             IUserValidator validator = null )
         {
+            _subscribers = new List<ISubscriber>();
             _storageMode = storageMode;
             _slaveServices = slaveServices ?? new List<IUserStorageService>();
             _identifier = identifier ?? new GuidGenerate();
@@ -63,13 +71,26 @@ namespace UserStorageServices
 
         private void AddInSlave(User user)
         {
-            _storage.Add(user);
+            Console.WriteLine("slave addition");
+            _storage.Add(user); 
         }
 
         private void RemoveInSlave(User user)
         {
+            Console.WriteLine("slave removal");
             _storage.Remove(user);
         }
+
+        public void AddSubscriber(ISubscriber subscriber)
+        {
+            _subscribers.Add(subscriber);
+        }
+
+        public void RemoveSubscriber(ISubscriber subscriber)
+        {
+            _subscribers.Remove(subscriber);
+        }
+
 
         /// <summary>
         /// Adds a new <see cref="User"/> to the storage.

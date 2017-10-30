@@ -12,7 +12,9 @@ namespace UserStorageServices
 
         protected UserStorageServiceDecorator(IUserStorageService wrappee = null)
         {
-            this.Wrappee = wrappee ?? new UserStorageService(StorageMode.MasterNode);
+            var slave1 = new UserStorageService(StorageMode.SlaveNode);
+            var slave2 = new UserStorageService(StorageMode.SlaveNode);
+            this.Wrappee = wrappee ?? new UserStorageService(StorageMode.MasterNode, new[]{slave1, slave2});
         }
 
         public virtual int Count => Wrappee.Count;

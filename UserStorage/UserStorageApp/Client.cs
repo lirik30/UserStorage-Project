@@ -14,7 +14,10 @@ namespace UserStorageApp
         /// </summary>
         public Client(IUserStorageService userStorageService = null)
         {
-            _userStorageService = userStorageService ?? new UserStorageService(StorageMode.MasterNode);
+            var slave1 = new UserStorageService(StorageMode.SlaveNode);
+            var slave2 = new UserStorageService(StorageMode.SlaveNode);
+
+            _userStorageService = userStorageService ?? new UserStorageService(StorageMode.MasterNode, new []{slave1, slave2});
         }
 
         /// <summary>

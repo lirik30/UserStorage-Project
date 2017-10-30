@@ -51,6 +51,7 @@
     <Compile Include="FirstNameValidator.cs" />
     <Compile Include="GuidGenerate.cs" />
     <Compile Include="IGenerateIdentifier.cs" />
+    <Compile Include="ISubscriber.cs" />
     <Compile Include="IUserStorageService.cs" />
     <Compile Include="IUserValidator.cs" />
     <Compile Include="LastNameValidator.cs" />

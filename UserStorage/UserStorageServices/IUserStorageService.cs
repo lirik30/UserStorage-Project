@@ -8,6 +8,8 @@ namespace UserStorageServices
 {
     public interface IUserStorageService
     {
+        StorageMode StorageMode { get; }
+
         int Count { get; }
 
         void Add(User user);

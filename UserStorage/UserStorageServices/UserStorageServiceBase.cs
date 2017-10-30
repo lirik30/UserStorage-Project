@@ -8,7 +8,6 @@ using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices
 {
-
     public enum StorageMode
     {
         MasterNode,
@@ -18,50 +17,40 @@ namespace UserStorageServices
     /// <summary>
     /// Represents a service that stores a set of <see cref="User"/>s and allows to search through them.
     /// </summary>
-    public class UserStorageService : IUserStorageService
+    public abstract class UserStorageServiceBase : IUserStorageService
     {
         /// <summary>
         /// Master or slave mode of the storage
         /// </summary>
-        private readonly StorageMode _storageMode;
+        protected readonly StorageMode _storageMode;
 
-        /// <summary>
-        /// Subscribers of the UserStorageService
-        /// </summary>
-        private List<ISubscriber> _subscribers;
 
         /// <summary>
         /// Provides an identifier generation strategy
         /// </summary>
-        private readonly IGenerateIdentifier _identifier;
-
-        /// <summary>
-        /// Provides data replication for master node
-        /// </summary>
-        private readonly IEnumerable<IUserStorageService> _slaveServices;
+        protected readonly IGenerateIdentifier _identifier;
 
         /// <summary>
         /// Provides a validation strategy
         /// </summary>
-        private readonly IUserValidator _validator;
+        protected readonly IUserValidator _validator;
 
         /// <summary>
         /// User store
         /// </summary>
-        private HashSet<User> _storage = new HashSet<User>();
+        protected HashSet<User> _storage = new HashSet<User>();
 
-        public UserStorageService(
+        public UserStorageServiceBase(
             StorageMode storageMode,
-            IEnumerable<IUserStorageService> slaveServices = null,
             IGenerateIdentifier identifier = null, 
             IUserValidator validator = null )
         {
-            _subscribers = new List<ISubscriber>();
             _storageMode = storageMode;
-            _slaveServices = slaveServices ?? new List<IUserStorageService>();
             _identifier = identifier ?? new GuidGenerate();
             _validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
         }
+
+        public abstract StorageMode StorageMode { get; }
 
         /// <summary>
         /// Gets the number of elements contained in the storage.
@@ -81,36 +70,15 @@ namespace UserStorageServices
             _storage.Remove(user);
         }
 
-        public void AddSubscriber(ISubscriber subscriber)
-        {
-            _subscribers.Add(subscriber);
-        }
-
-        public void RemoveSubscriber(ISubscriber subscriber)
-        {
-            _subscribers.Remove(subscriber);
-        }
-
 
         /// <summary>
         /// Adds a new <see cref="User"/> to the storage.
         /// </summary>
         /// <param name="user">A new <see cref="User"/> that will be added to the storage.</param>
-        public void Add(User user)
+        public virtual void Add(User user)
         {
-            if (_storageMode != StorageMode.MasterNode)
-            {
-                throw new NotSupportedException("The slave node isn't support write operation.");
-            }
-
             _validator.Validate(user);
             user.Id = _identifier.Generate();
-
-            
-            foreach (var slave in _slaveServices)
-            {
-                ((UserStorageService)slave).AddInSlave(user);  // !!!!!!!
-            }
 
             _storage.Add(user);
         }
@@ -118,13 +86,8 @@ namespace UserStorageServices
         /// <summary>
         /// Removes an existed <see cref="User"/> from the storage.
         /// </summary>
-        public void Remove(User user)
+        public virtual void Remove(User user)
         {
-            if (_storageMode != StorageMode.MasterNode)
-            {
-                throw new NotSupportedException("The slave node isn't support remove operation.");
-            }
-
             if (user == null)
             {
                 throw new UserIsNullException("User cannot be null");
@@ -141,12 +104,6 @@ namespace UserStorageServices
             if (resultUsers.Count() != 1)
             {
                 throw new InvalidOperationException("Operation is invalid. Multiple choices possible");
-            }
-
-            
-            foreach (var slave in _slaveServices)
-            {
-                ((UserStorageService)slave).RemoveInSlave(resultUsers.First());  // !!!!!!!
             }
 
             _storage.Remove(resultUsers.First());

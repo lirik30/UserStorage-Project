@@ -3,7 +3,7 @@
 namespace UserStorageApp
 {
     /// <summary>
-    /// Represents a client that uses an instance of the <see cref="UserStorageService"/>.
+    /// Represents a client that uses an instance of the <see cref="UserStorageServiceBase"/>.
     /// </summary>
     public class Client
     {
@@ -14,14 +14,14 @@ namespace UserStorageApp
         /// </summary>
         public Client(IUserStorageService userStorageService = null)
         {
-            var slave1 = new UserStorageService(StorageMode.SlaveNode);
-            var slave2 = new UserStorageService(StorageMode.SlaveNode);
+            var slave1 = new UserStorageServiceSlave();
+            var slave2 = new UserStorageServiceSlave();
 
-            _userStorageService = userStorageService ?? new UserStorageService(StorageMode.MasterNode, new []{slave1, slave2});
+            _userStorageService = userStorageService ?? new UserStorageServiceMaster(new []{slave1, slave2});
         }
 
         /// <summary>
-        /// Runs a sequence of actions on an instance of the <see cref="UserStorageService"/> class.
+        /// Runs a sequence of actions on an instance of the <see cref="UserStorageServiceBase"/> class.
         /// </summary>
         public void Run()
         {

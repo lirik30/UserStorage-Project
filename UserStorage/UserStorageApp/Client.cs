@@ -17,7 +17,7 @@ namespace UserStorageApp
             var slave1 = new UserStorageServiceSlave();
             var slave2 = new UserStorageServiceSlave();
 
-            _userStorageService = userStorageService ?? new UserStorageServiceMaster(new []{slave1, slave2});
+            _userStorageService = userStorageService ?? new UserStorageServiceMaster(new[] { slave1, slave2 });
         }
 
         /// <summary>

@@ -29,7 +29,7 @@ namespace UserStorageServices.Tests
             // Arrange
             var slave1 = new UserStorageServiceSlave();
             var slave2 = new UserStorageServiceSlave();
-            var userStorageService = new UserStorageServiceMaster(new []{slave1, slave2});
+            var userStorageService = new UserStorageServiceMaster(new[] { slave1, slave2 });
 
             // Act
             userStorageService.Add(new User
@@ -144,7 +144,6 @@ namespace UserStorageServices.Tests
         }
 
         // Remove tests
-
         [TestMethod]
         [ExpectedException(typeof(NotSupportedException))]
         public void Remove_RemovalInSlaveNode_ExceptionThrown()
@@ -200,7 +199,6 @@ namespace UserStorageServices.Tests
                 LastName = "Pavlov",
                 Age = 30
             });
-
 
             // Assert - slave nodes user count must increase to 1 user
             Assert.AreEqual(1, slave1.Count);

@@ -19,10 +19,8 @@ namespace UserStorageServices
         {
             get
             {
-                if (this._loggingSwitch.Enabled)
-                {
+                if (_loggingSwitch.Enabled)
                     Trace.TraceInformation("Count property is called.");
-                }
 
                 return base.Count;
             }
@@ -30,30 +28,24 @@ namespace UserStorageServices
 
         public override void Add(User user)
         {
-            if (this._loggingSwitch.Enabled)
-            {
+            if (_loggingSwitch.Enabled)
                 Trace.TraceInformation("Add() method is called.");
-            }
 
             base.Add(user);
         }
 
         public override void Remove(User user)
         {
-            if (this._loggingSwitch.Enabled)
-            {
+            if (_loggingSwitch.Enabled)
                 Trace.TraceInformation("Remove() method is called.");
-            }
 
             base.Remove(user);
         }
 
         public override IEnumerable<User> Search(Func<User, bool> predicate)
         {
-            if (this._loggingSwitch.Enabled)
-            {
+            if (_loggingSwitch.Enabled)
                 Trace.TraceInformation("Search() method is called.");
-            }
 
             return base.Search(predicate);
         }

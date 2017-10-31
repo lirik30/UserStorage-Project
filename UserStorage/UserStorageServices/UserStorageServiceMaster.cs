@@ -6,17 +6,31 @@ using System.Threading.Tasks;
 
 namespace UserStorageServices
 {
+    public class StorageChangeEventArgs : EventArgs
+    {
+        public User User { get; }
+
+        public StorageChangeEventArgs(User user)
+        {
+            User = user;
+        }
+    }
+
     public class UserStorageServiceMaster : UserStorageServiceBase
     {
         /// <summary>
         /// Subscribers of the UserStorageService
         /// </summary>
-        private List<ISubscriber> _subscribers;
+        //private List<ISubscriber> _subscribers;
 
         /// <summary>
         /// Provides data replication for master node
         /// </summary>
         private readonly IEnumerable<IUserStorageService> _slaveServices;
+
+        public EventHandler<StorageChangeEventArgs> UserAddedEvent = delegate { };
+
+        public EventHandler<StorageChangeEventArgs> UserRemovedEvent = delegate { };
 
         public override StorageMode StorageMode => _storageMode;
 
@@ -24,21 +38,34 @@ namespace UserStorageServices
             IUserValidator validator = null) : base(StorageMode.MasterNode, identifier, validator)
         {
             _slaveServices = slaveServices ?? new List<UserStorageServiceSlave>();
-            _subscribers = new List<ISubscriber>();
             foreach (var slave in _slaveServices)
             {
-                _subscribers.Add(slave as ISubscriber);
+                AddSubscriber(slave as ISubscriber);
             }
+        }
+
+        private void OnUserAdded(StorageChangeEventArgs eventArgs)
+        {
+            EventHandler<StorageChangeEventArgs> temp = UserAddedEvent;
+            temp?.Invoke(this, eventArgs);
+        }
+
+        private void OnUserRemoved(StorageChangeEventArgs eventArgs)
+        {
+            EventHandler<StorageChangeEventArgs> temp = UserRemovedEvent;
+            temp?.Invoke(this, eventArgs);
         }
 
         public void AddSubscriber(ISubscriber subscriber)
         {
-            _subscribers.Add(subscriber);
+            UserAddedEvent += subscriber.UserAdded;
+            UserRemovedEvent += subscriber.UserRemoved;
         }
 
         public void RemoveSubscriber(ISubscriber subscriber)
         {
-            _subscribers.Remove(subscriber);
+            UserAddedEvent -= subscriber.UserAdded;
+            UserRemovedEvent -= subscriber.UserRemoved;
         }
 
 
@@ -46,21 +73,15 @@ namespace UserStorageServices
         {
             base.Add(user);
 
-            foreach (var subscriber in _subscribers)
-            {
-                subscriber.UserAdded(user);
-            }
+            OnUserAdded(new StorageChangeEventArgs(user));
         }
 
 
         public override void Remove(User user)
         {
             base.Remove(user);
-            
-            foreach (var subscriber in _subscribers)
-            {
-                subscriber.UserRemoved(user);
-            }
+
+            OnUserRemoved(new StorageChangeEventArgs(user));
         }
     }
 }

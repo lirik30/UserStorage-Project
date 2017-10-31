@@ -8,8 +8,8 @@ namespace UserStorageServices
 {
     public interface ISubscriber
     {
-        void UserAdded(User user);
+        void UserAdded(object sender, StorageChangeEventArgs eventArgs);
 
-        void UserRemoved(User user);
+        void UserRemoved(object sender, StorageChangeEventArgs eventArgs);
     }
 }

@@ -38,14 +38,14 @@ namespace UserStorageServices
             }
         }
 
-        public void UserAdded(User user)
+        public void UserAdded(object sender, StorageChangeEventArgs eventArgs)
         {
-            Add(user);
+            Add(eventArgs.User);
         }
 
-        public void UserRemoved(User user)
+        public void UserRemoved(object sender, StorageChangeEventArgs eventArgs)
         {
-            Remove(user);
+            Remove(eventArgs.User);
         }
 
         private bool IsCallFromMaster()

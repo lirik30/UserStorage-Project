@@ -12,9 +12,7 @@ namespace UserStorageServices
         public void Validate(User user)
         {
             if (user.Age < 0)
-            {
                 throw new AgeExceedsLimitException("Age of user must be greater than zero");
-            }
         }
     }
 }

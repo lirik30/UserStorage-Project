@@ -8,33 +8,41 @@ using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices
 {
+    public enum StorageMode
+    {
+        MasterNode,
+        SlaveNode
+    }
+
     /// <summary>
     /// Represents a service that stores a set of <see cref="User"/>s and allows to search through them.
     /// </summary>
-    public class UserStorageService : IUserStorageService
+    public abstract class UserStorageServiceBase : IUserStorageService
     {
         /// <summary>
         /// Provides an identifier generation strategy
         /// </summary>
-        private readonly IGenerateIdentifier _identifier;
+        protected readonly IGenerateIdentifier Identifier;
 
         /// <summary>
         /// Provides a validation strategy
         /// </summary>
-        private readonly IUserValidator _validator;
+        protected readonly IUserValidator Validator;
 
         /// <summary>
         /// User store
         /// </summary>
         private HashSet<User> _storage = new HashSet<User>();
 
-        public UserStorageService(
+        protected UserStorageServiceBase(
             IGenerateIdentifier identifier = null, 
             IUserValidator validator = null)
         {
-            _identifier = identifier ?? new GuidGenerate();
-            _validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
+            Identifier = identifier ?? new GuidGenerate();
+            Validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
         }
+
+        public abstract StorageMode StorageMode { get; }
 
         /// <summary>
         /// Gets the number of elements contained in the storage.
@@ -46,36 +54,30 @@ namespace UserStorageServices
         /// Adds a new <see cref="User"/> to the storage.
         /// </summary>
         /// <param name="user">A new <see cref="User"/> that will be added to the storage.</param>
-        public void Add(User user)
+        public virtual void Add(User user)
         {
-            _validator.Validate(user);
+            Validator.Validate(user);
+            user.Id = Identifier.Generate();
 
-            user.Id = _identifier.Generate();
             _storage.Add(user);
         }
 
         /// <summary>
         /// Removes an existed <see cref="User"/> from the storage.
         /// </summary>
-        public void Remove(User user)
+        public virtual void Remove(User user)
         {
             if (user == null)
-            {
                 throw new UserIsNullException("User cannot be null");
-            }
 
             var resultUsers = 
                 Search(u => u.FirstName == user.FirstName && u.LastName == user.LastName && u.Age == user.Age);
 
             if (!resultUsers.Any())
-            {
                 throw new ArgumentException("There is no record of such user in the storage");
-            }
 
             if (resultUsers.Count() != 1)
-            {
                 throw new InvalidOperationException("Operation is invalid. Multiple choices possible");
-            }
 
             _storage.Remove(resultUsers.First());
         }
@@ -86,9 +88,7 @@ namespace UserStorageServices
         public IEnumerable<User> Search(Func<User, bool> predicate)
         {
             if (predicate == null)
-            {
                 throw new ArgumentNullException(nameof(predicate), "Predicate must be not null");
-            }
 
             var searchResult = _storage.Where(predicate);
 

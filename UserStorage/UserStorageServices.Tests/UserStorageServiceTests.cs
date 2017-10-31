@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Microsoft.Win32;
 using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices.Tests
@@ -10,11 +11,45 @@ namespace UserStorageServices.Tests
     {
         // Add tests
         [TestMethod]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void Add_AdditionInSlaveNode_ExceptionThrown()
+        {
+            // Arrange
+            var userStorageService = new UserStorageServiceSlave();
+
+            // Act
+            userStorageService.Add(null);
+
+            // Assert - [ExpectedException]
+        }
+
+        [TestMethod]
+        public void Add_AdditionInMasterNode_OneElementInSlaveNode()
+        {
+            // Arrange
+            var slave1 = new UserStorageServiceSlave();
+            var slave2 = new UserStorageServiceSlave();
+            var userStorageService = new UserStorageServiceMaster(new[] { slave1, slave2 });
+
+            // Act
+            userStorageService.Add(new User
+            {
+                FirstName = "A",
+                LastName = "B",
+                Age = 10
+            });
+            
+            // Assert - slave nodes user count must increase to 1 user
+            Assert.AreEqual(1, slave1.Count);
+            Assert.AreEqual(1, slave2.Count);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(UserIsNullException))]
         public void Add_NullAsUserArgument_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
 
             // Act
             userStorageService.Add(null);
@@ -27,7 +62,7 @@ namespace UserStorageServices.Tests
         public void Add_UserFirstNameIsNull_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
 
             // Act
             userStorageService.Add(new User
@@ -45,7 +80,7 @@ namespace UserStorageServices.Tests
         public void Add_UserLastNameIsNull_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
 
             // Act
             userStorageService.Add(new User
@@ -63,7 +98,7 @@ namespace UserStorageServices.Tests
         public void Add_UserAgeIsLessThanZero_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
 
             // Act
             userStorageService.Add(new User
@@ -80,7 +115,7 @@ namespace UserStorageServices.Tests
         public void Add_SomeUser_SuccessfulAddition()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
 
             // Act
             userStorageService.Add(new User
@@ -110,11 +145,72 @@ namespace UserStorageServices.Tests
 
         // Remove tests
         [TestMethod]
+        [ExpectedException(typeof(NotSupportedException))]
+        public void Remove_RemovalInSlaveNode_ExceptionThrown()
+        {
+            // Arrange
+            var userStorageService = new UserStorageServiceSlave();
+
+            // Act
+            userStorageService.Remove(new User());
+
+            // Assert - [ExpectedException]
+        }
+
+        [TestMethod]
+        public void Remove_RemovalInMasterNode_OneElementInSlaveNode()
+        {
+            // Arrange
+            var slave1 = new UserStorageServiceSlave();
+            var slave2 = new UserStorageServiceSlave();
+            var userStorageService = new UserStorageServiceMaster(new[] { slave1, slave2 });
+            userStorageService.Add(new User
+            {
+                FirstName = "Pavel",
+                LastName = "Pavlov",
+                Age = 25
+            });
+
+            userStorageService.Add(new User
+            {
+                FirstName = "Andrey",
+                LastName = "Andreev",
+                Age = 40
+            });
+
+            userStorageService.Add(new User
+            {
+                FirstName = "Pavel",
+                LastName = "Pavlov",
+                Age = 30
+            });
+
+            // Act
+            userStorageService.Remove(new User
+            {
+                FirstName = "Pavel",
+                LastName = "Pavlov",
+                Age = 25
+            });
+
+            userStorageService.Remove(new User
+            {
+                FirstName = "Pavel",
+                LastName = "Pavlov",
+                Age = 30
+            });
+
+            // Assert - slave nodes user count must increase to 1 user
+            Assert.AreEqual(1, slave1.Count);
+            Assert.AreEqual(1, slave2.Count);
+        }
+
+        [TestMethod]
         [ExpectedException(typeof(UserIsNullException))]
         public void Remove_NullAsUserArgument_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
 
             // Act
             userStorageService.Remove(null);
@@ -127,7 +223,7 @@ namespace UserStorageServices.Tests
         public void Remove_UserDoesNotExist_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
 
             // Act
             userStorageService.Remove(new User());
@@ -140,7 +236,7 @@ namespace UserStorageServices.Tests
         public void Remove_SevaralUsersWithTheSameData_ExceptionThrown()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
             userStorageService.Add(new User
             {
                 FirstName = "Pavel",
@@ -177,7 +273,7 @@ namespace UserStorageServices.Tests
         public void Remove_SomeUsers_SuccessfulRemoval()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
             userStorageService.Add(new User
             {
                 FirstName = "Pavel",
@@ -217,7 +313,7 @@ namespace UserStorageServices.Tests
         public void Search_PredicateIsNull_ExceptionThrows()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
             userStorageService.Add(new User
             {
                 FirstName = "Pavel",
@@ -249,7 +345,7 @@ namespace UserStorageServices.Tests
         public void Search_LastNameIsNull_ZeroCollection()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
             userStorageService.Add(new User
             {
                 FirstName = "Pavel",
@@ -282,7 +378,7 @@ namespace UserStorageServices.Tests
         public void Search_AgeIsLessThanZeroFirstNameIsArbitrary_ZeroCollection()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
             userStorageService.Add(new User
             {
                 FirstName = "Pavel",
@@ -315,7 +411,7 @@ namespace UserStorageServices.Tests
         public void Search_AgeIs25_TwoElements()
         {
             // Arrange
-            var userStorageService = new UserStorageService();
+            var userStorageService = new UserStorageServiceMaster();
             userStorageService.Add(new User
             {
                 FirstName = "Pavel",

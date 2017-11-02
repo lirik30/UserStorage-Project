@@ -48,10 +48,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgeValidator.cs" />
+    <Compile Include="BinaryUserSerializer.cs" />
     <Compile Include="CompositeValidator.cs" />
     <Compile Include="FirstNameValidator.cs" />
     <Compile Include="GuidGenerate.cs" />
     <Compile Include="IGenerateIdentifier.cs" />
+    <Compile Include="ISerializer.cs" />
     <Compile Include="ISubscriber.cs" />
     <Compile Include="IUserRepository.cs" />
     <Compile Include="IUserStorageService.cs" />
@@ -73,6 +75,7 @@
     <Compile Include="Validation exceptions\LastNameExceedsLimitException.cs" />
     <Compile Include="Validation exceptions\LastNameIsNullOrEmptyException.cs" />
     <Compile Include="Validation exceptions\UserIsNullException.cs" />
+    <Compile Include="XmlUserSerializer.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

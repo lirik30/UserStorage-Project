@@ -19,6 +19,8 @@ namespace UserStorageServices
     /// </summary>
     public abstract class UserStorageServiceBase : IUserStorageService
     {
+        private readonly IUserRepository _repository;
+
         /// <summary>
         /// Provides an identifier generation strategy
         /// </summary>
@@ -29,15 +31,12 @@ namespace UserStorageServices
         /// </summary>
         protected readonly IUserValidator Validator;
 
-        /// <summary>
-        /// User store
-        /// </summary>
-        private HashSet<User> _storage = new HashSet<User>();
-
         protected UserStorageServiceBase(
             IGenerateIdentifier identifier = null, 
-            IUserValidator validator = null)
+            IUserValidator validator = null,
+            IUserRepository repository = null)
         {
+            _repository = repository ?? new UserMemoryCache();
             Identifier = identifier ?? new GuidGenerate();
             Validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
         }
@@ -48,7 +47,7 @@ namespace UserStorageServices
         /// Gets the number of elements contained in the storage.
         /// </summary>
         /// <returns>An amount of users in the storage.</returns>
-        public int Count => _storage.Count;
+        public int Count => _repository.Count;
 
         /// <summary>
         /// Adds a new <see cref="User"/> to the storage.
@@ -59,7 +58,7 @@ namespace UserStorageServices
             Validator.Validate(user);
             user.Id = Identifier.Generate();
 
-            _storage.Add(user);
+            _repository.Add(user);
         }
 
         /// <summary>
@@ -79,7 +78,7 @@ namespace UserStorageServices
             if (resultUsers.Count() != 1)
                 throw new InvalidOperationException("Operation is invalid. Multiple choices possible");
 
-            _storage.Remove(resultUsers.First());
+            _repository.Remove(resultUsers.First());
         }
 
         /// <summary>
@@ -90,9 +89,7 @@ namespace UserStorageServices
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate), "Predicate must be not null");
 
-            var searchResult = _storage.Where(predicate);
-
-            return searchResult;
+            return _repository.Search(predicate);
         }
     }
 }

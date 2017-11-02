@@ -8,14 +8,16 @@ namespace UserStorageServices
 {
     public interface IUserRepository
     {
+        int Count { get; }
+
         void Start();
 
         void Stop();
 
-        void Get();
+        void Add(User user);
 
-        void Set();
+        void Remove(User user);
 
-        void Query();
+        IEnumerable<User> Search(Func<User, bool> predicate);
     }
 }

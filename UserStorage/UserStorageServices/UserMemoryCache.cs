@@ -8,7 +8,12 @@ namespace UserStorageServices
 {
     public class UserMemoryCache : IUserRepository
     {
-        private HashSet<User> _storage;
+        /// <summary>
+        /// User store
+        /// </summary>
+        private readonly HashSet<User> _storage = new HashSet<User>();
+
+        public int Count => _storage.Count;
 
         public void Start()
         {
@@ -20,19 +25,19 @@ namespace UserStorageServices
 
         }
 
-        public void Get()
+        public void Add(User user)
         {
-
+            _storage.Add(user);
         }
 
-        public void Set()
+        public void Remove(User user)
         {
-
+            _storage.Remove(user);
         }
 
-        public void Query()
+        public IEnumerable<User> Search(Func<User, bool> predicate)
         {
-
+            return _storage.Where(predicate);
         }
     }
 }

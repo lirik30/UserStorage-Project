@@ -36,7 +36,7 @@ namespace UserStorageServices
             IUserValidator validator = null,
             IUserRepository repository = null)
         {
-            _repository = repository ?? new UserMemoryCache();
+            _repository = repository ?? new UserMemoryCacheWithState();
             Identifier = identifier ?? new GuidGenerate();
             Validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
         }

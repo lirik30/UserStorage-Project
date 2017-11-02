@@ -11,7 +11,8 @@ namespace UserStorageServices
     {
         public UserStorageServiceSlave(
             IGenerateIdentifier identifier = null,
-            IUserValidator validator = null) : base(identifier, validator)
+            IUserValidator validator = null,
+            IUserRepository userRepository = null) : base(identifier, validator, userRepository)
         {  
         }
 

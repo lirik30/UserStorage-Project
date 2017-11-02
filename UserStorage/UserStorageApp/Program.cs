@@ -19,7 +19,7 @@ namespace UserStorageApp
             {
                 host.SmartOpen();
 
-                var client = new Client(new LoggingDecorator());
+                var client = new Client();
 
                 client.Run();
 

@@ -10,9 +10,9 @@ namespace UserStorageServices
     {
         int Count { get; }
 
-        void Start();
+        void Start(string path);
 
-        void Stop();
+        void Stop(string path);
 
         void Add(User user);
 

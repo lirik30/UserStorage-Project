@@ -1,4 +1,5 @@
-﻿using UserStorageServices;
+﻿using System;
+using UserStorageServices;
 
 namespace UserStorageApp
 {
@@ -8,16 +9,18 @@ namespace UserStorageApp
     public class Client
     {
         private readonly IUserStorageService _userStorageService;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
         /// </summary>
-        public Client(IUserStorageService userStorageService = null)
+        public Client(IUserStorageService userStorageService = null, IUserRepository userRepository = null)
         {
             var slave1 = new UserStorageServiceSlave();
             var slave2 = new UserStorageServiceSlave();
 
-            _userStorageService = userStorageService ?? new UserStorageServiceMaster(new[] { slave1, slave2 });
+            _userRepository = userRepository ?? new UserMemoryCacheWithState();
+            _userStorageService = userStorageService ?? new UserStorageServiceMaster(new[] { slave1, slave2 }, _userRepository);
         }
 
         /// <summary>
@@ -25,23 +28,34 @@ namespace UserStorageApp
         /// </summary>
         public void Run()
         {
+            _userRepository.Start("repository.bin");
             _userStorageService.Add(new User
             {
-                FirstName = "Alex",
-                LastName = "Black",
+                FirstName = "A",
+                LastName = "B",
                 Age = 25
             });
-
-            int a = _userStorageService.Count;
-
-            _userStorageService.Remove(new User
+            _userStorageService.Add(new User
             {
-                FirstName = "Alex",
-                LastName = "Black",
-                Age = 25
+                FirstName = "I",
+                LastName = "I", 
+                Age = 16
+            });
+            _userStorageService.Add(new User
+            {
+                FirstName = "T",
+                LastName = "T",
+                Age = 19
             });
 
-            _userStorageService.Search(u => u.FirstName == "Alex");
+            foreach (var user in _userStorageService.Search(x => x.FirstName != null))
+            {
+                Console.WriteLine($"First name: {user.FirstName}");
+                Console.WriteLine($"Last name: {user.LastName}");
+                Console.WriteLine($"Age: {user.Age}");
+            }
+
+            _userRepository.Stop("repository.bin");
         }
     }
 }

@@ -11,33 +11,33 @@ namespace UserStorageServices
         /// <summary>
         /// User store
         /// </summary>
-        private readonly HashSet<User> _storage = new HashSet<User>();
+        protected HashSet<User> Storage = new HashSet<User>();
 
-        public int Count => _storage.Count;
+        public int Count => Storage.Count;
 
-        public void Start()
+        public virtual void Start(string path)
         {
             
         }
 
-        public void Stop()
+        public virtual void Stop(string path)
         {
 
         }
 
         public void Add(User user)
         {
-            _storage.Add(user);
+            Storage.Add(user);
         }
 
         public void Remove(User user)
         {
-            _storage.Remove(user);
+            Storage.Remove(user);
         }
 
         public IEnumerable<User> Search(Func<User, bool> predicate)
         {
-            return _storage.Where(predicate);
+            return Storage.Where(predicate);
         }
     }
 }

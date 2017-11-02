@@ -28,23 +28,23 @@ namespace UserStorageApp
         /// </summary>
         public void Run()
         {
-            _userRepository.Start("repository.bin");
+            _userRepository.Start();
             _userStorageService.Add(new User
             {
-                FirstName = "A",
-                LastName = "B",
+                FirstName = "Alex",
+                LastName = "BLack",
                 Age = 25
             });
             _userStorageService.Add(new User
             {
-                FirstName = "I",
-                LastName = "I", 
+                FirstName = "Ivan",
+                LastName = "Ivanov", 
                 Age = 16
             });
             _userStorageService.Add(new User
             {
-                FirstName = "T",
-                LastName = "T",
+                FirstName = "Troll",
+                LastName = "Trollson",
                 Age = 19
             });
 
@@ -55,7 +55,7 @@ namespace UserStorageApp
                 Console.WriteLine($"Age: {user.Age}");
             }
 
-            _userRepository.Stop("repository.bin");
+            _userRepository.Stop();
         }
     }
 }

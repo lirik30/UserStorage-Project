@@ -15,12 +15,12 @@ namespace UserStorageServices
 
         public int Count => Storage.Count;
 
-        public virtual void Start(string path)
+        public virtual void Start()
         {
             
         }
 
-        public virtual void Stop(string path)
+        public virtual void Stop()
         {
 
         }

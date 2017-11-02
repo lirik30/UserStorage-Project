@@ -1,23 +1,21 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
+using System.Configuration;
 
 namespace UserStorageServices
 {
     public class UserMemoryCacheWithState : UserMemoryCache
     {
-        public override void Start(string path) //path - repository.bin
+        public override void Start() //path - repository.bin
         {
-            path = path ?? "repository.bin";
+            var path = ConfigurationManager.AppSettings["RepositoryBinDataFile"];
             try
             {
                 FileStream fs = new FileStream(path, FileMode.Open);
+                Console.WriteLine(path);
                 try
                 {
                     BinaryFormatter formatter = new BinaryFormatter();
@@ -41,13 +39,13 @@ namespace UserStorageServices
             }
         }
 
-        public override void Stop(string path)
+        public override void Stop()
         {
             if(Storage == null)
                 throw new InvalidOperationException();
 
-            path = path ?? "repository.bin";
-            
+            var path = ConfigurationManager.AppSettings["RepositoryBinDataFile"];
+            Console.WriteLine(path);
             FileStream fs = new FileStream(path, FileMode.Create);
             try
             {

@@ -16,9 +16,6 @@ namespace UserStorageApp
         /// </summary>
         public Client(IUserStorageService userStorageService = null, IUserRepository userRepository = null)
         {
-            //var slave1 = new UserStorageServiceSlave();
-            //var slave2 = new UserStorageServiceSlave();
-
             _userRepository = userRepository ?? new UserMemoryCacheWithState();
             _userStorageService = (UserStorageServiceMaster)userStorageService ?? new UserStorageServiceMaster(userRepository: _userRepository);
         }
@@ -34,7 +31,7 @@ namespace UserStorageApp
             _userStorageService.AddSubscriber(slave1);
             _userStorageService.AddSubscriber(slave2);
 
-            //_userRepository.Start();
+            // _userRepository.Start();
             _userStorageService.Add(new User
             {
                 FirstName = "Alex",

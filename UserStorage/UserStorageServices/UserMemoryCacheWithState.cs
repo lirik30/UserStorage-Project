@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Configuration;
-
-namespace UserStorageServices
+﻿namespace UserStorageServices
 {
     public class UserMemoryCacheWithState : UserMemoryCache
     {
@@ -19,13 +12,13 @@ namespace UserStorageServices
         public override void Start()
         {
             base.Start();
-            Storage = _serializer.DeserializeUsers();
+            storage = _serializer.DeserializeUsers();
         }
 
         public override void Stop()
         {
             base.Stop();
-            _serializer.SerializeUsers(Storage);
+            _serializer.SerializeUsers(storage);
         }
     }
 }

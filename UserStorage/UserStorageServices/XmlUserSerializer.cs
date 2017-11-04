@@ -2,11 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -64,7 +60,6 @@ namespace UserStorageServices
                 Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
                 throw;
             }
-            throw new NotImplementedException();
         }
     }
 }

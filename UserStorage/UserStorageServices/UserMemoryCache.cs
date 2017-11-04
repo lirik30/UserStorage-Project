@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UserStorageServices
 {
@@ -15,11 +12,11 @@ namespace UserStorageServices
         /// <summary>
         /// User store
         /// </summary>
-        protected HashSet<User> Storage = new HashSet<User>();
+        protected HashSet<User> storage = new HashSet<User>();
 
         public int PreviousIdentifier { get; set; }
 
-        public int Count => Storage.Count;
+        public int Count => storage.Count;
 
         public virtual void Start()
         {
@@ -70,17 +67,17 @@ namespace UserStorageServices
 
         public void Add(User user)
         {
-            Storage.Add(user);
+            storage.Add(user);
         }
 
         public void Remove(User user)
         {
-            Storage.Remove(user);
+            storage.Remove(user);
         }
 
         public IEnumerable<User> Search(Func<User, bool> predicate)
         {
-            return Storage.Where(predicate);
+            return storage.Where(predicate);
         }
     }
 }

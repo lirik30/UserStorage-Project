@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.Remoting.Messaging;
 using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices
@@ -19,7 +16,7 @@ namespace UserStorageServices
     /// </summary>
     public abstract class UserStorageServiceBase : IUserStorageService
     {
-        protected readonly IUserRepository _repository;
+        protected readonly IUserRepository Repository;
 
         /// <summary>
         /// Provides a validation strategy
@@ -30,7 +27,7 @@ namespace UserStorageServices
             IUserValidator validator = null,
             IUserRepository repository = null)
         {
-            _repository = repository ?? new UserMemoryCacheWithState();
+            Repository = repository ?? new UserMemoryCacheWithState();
             Validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
         }
 
@@ -40,7 +37,7 @@ namespace UserStorageServices
         /// Gets the number of elements contained in the storage.
         /// </summary>
         /// <returns>An amount of users in the storage.</returns>
-        public int Count => _repository.Count;
+        public int Count => Repository.Count;
 
         /// <summary>
         /// Adds a new <see cref="User"/> to the storage.
@@ -49,8 +46,8 @@ namespace UserStorageServices
         public virtual void Add(User user)
         {
             Validator.Validate(user);
-            user.Id = ++((UserMemoryCache) _repository).PreviousIdentifier;
-            _repository.Add(user);
+            user.Id = ++((UserMemoryCache)Repository).PreviousIdentifier;
+            Repository.Add(user);
         }
 
         /// <summary>
@@ -70,7 +67,7 @@ namespace UserStorageServices
             if (resultUsers.Count() != 1)
                 throw new InvalidOperationException("Operation is invalid. Multiple choices possible");
 
-            _repository.Remove(resultUsers.First());
+            Repository.Remove(resultUsers.First());
         }
 
         /// <summary>
@@ -81,7 +78,7 @@ namespace UserStorageServices
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate), "Predicate must be not null");
 
-            return _repository.Search(predicate);
+            return Repository.Search(predicate);
         }
     }
 }

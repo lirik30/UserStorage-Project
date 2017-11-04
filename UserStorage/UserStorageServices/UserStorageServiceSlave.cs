@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UserStorageServices
 {
@@ -20,7 +17,7 @@ namespace UserStorageServices
         public override void Add(User user)
         {
             if (IsCallFromMaster())
-                _repository.Add(user);
+                Repository.Add(user);
 
             else
                 throw new NotSupportedException();
@@ -29,7 +26,7 @@ namespace UserStorageServices
         public override void Remove(User user)
         {
             if (IsCallFromMaster())
-                _repository.Remove(user);
+                Repository.Remove(user);
 
             else
                 throw new NotSupportedException();

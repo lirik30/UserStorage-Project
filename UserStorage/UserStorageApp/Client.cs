@@ -1,4 +1,5 @@
-﻿using UserStorageServices;
+﻿using System;
+using UserStorageServices;
 
 namespace UserStorageApp
 {
@@ -7,17 +8,16 @@ namespace UserStorageApp
     /// </summary>
     public class Client
     {
-        private readonly IUserStorageService _userStorageService;
+        private readonly UserStorageServiceMaster _userStorageService;
+        private readonly IUserRepository _userRepository;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
         /// </summary>
-        public Client(IUserStorageService userStorageService = null)
+        public Client(IUserStorageService userStorageService = null, IUserRepository userRepository = null)
         {
-            var slave1 = new UserStorageServiceSlave();
-            var slave2 = new UserStorageServiceSlave();
-
-            _userStorageService = userStorageService ?? new UserStorageServiceMaster(new[] { slave1, slave2 });
+            _userRepository = userRepository ?? new UserMemoryCacheWithState();
+            _userStorageService = (UserStorageServiceMaster)userStorageService ?? new UserStorageServiceMaster(userRepository: _userRepository);
         }
 
         /// <summary>
@@ -25,23 +25,37 @@ namespace UserStorageApp
         /// </summary>
         public void Run()
         {
+            var slave1 = new UserStorageServiceSlave(userRepository: _userRepository);
+            var slave2 = new UserStorageServiceSlave(userRepository: _userRepository);
+
+            _userStorageService.AddSubscriber(slave1);
+            _userStorageService.AddSubscriber(slave2);
+
+            // _userRepository.Start();
             _userStorageService.Add(new User
             {
                 FirstName = "Alex",
-                LastName = "Black",
+                LastName = "BLack",
                 Age = 25
             });
-
-            int a = _userStorageService.Count;
-
-            _userStorageService.Remove(new User
+            _userStorageService.Add(new User
             {
-                FirstName = "Alex",
-                LastName = "Black",
-                Age = 25
+                FirstName = "Ivan",
+                LastName = "Ivanov", 
+                Age = 16
+            });
+            _userStorageService.Add(new User
+            {
+                FirstName = "Troll",
+                LastName = "Trollson",
+                Age = 19
             });
 
-            _userStorageService.Search(u => u.FirstName == "Alex");
+            Console.WriteLine(_userStorageService.Count);
+            Console.WriteLine(slave1.Count);
+            Console.WriteLine(slave2.Count);
+
+            _userRepository.Stop();
         }
     }
 }

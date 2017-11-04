@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UserStorageServices
 {
@@ -25,8 +22,8 @@ namespace UserStorageServices
 
         public UserStorageServiceMaster(
             IEnumerable<UserStorageServiceSlave> slaveServices = null, 
-            IGenerateIdentifier identifier = null,
-            IUserValidator validator = null) : base(identifier, validator)
+            IUserRepository userRepository = null,
+            IUserValidator validator = null) : base(validator, userRepository)
         {
             _slaveServices = slaveServices ?? new List<UserStorageServiceSlave>();
             foreach (var slave in _slaveServices)

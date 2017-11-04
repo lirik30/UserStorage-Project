@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Linq.Expressions;
-using System.Runtime.Remoting.Messaging;
 using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices
@@ -19,26 +16,18 @@ namespace UserStorageServices
     /// </summary>
     public abstract class UserStorageServiceBase : IUserStorageService
     {
-        /// <summary>
-        /// Provides an identifier generation strategy
-        /// </summary>
-        protected readonly IGenerateIdentifier Identifier;
+        protected readonly IUserRepository Repository;
 
         /// <summary>
         /// Provides a validation strategy
         /// </summary>
         protected readonly IUserValidator Validator;
 
-        /// <summary>
-        /// User store
-        /// </summary>
-        private HashSet<User> _storage = new HashSet<User>();
-
         protected UserStorageServiceBase(
-            IGenerateIdentifier identifier = null, 
-            IUserValidator validator = null)
+            IUserValidator validator = null,
+            IUserRepository repository = null)
         {
-            Identifier = identifier ?? new GuidGenerate();
+            Repository = repository ?? new UserMemoryCacheWithState();
             Validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
         }
 
@@ -48,7 +37,7 @@ namespace UserStorageServices
         /// Gets the number of elements contained in the storage.
         /// </summary>
         /// <returns>An amount of users in the storage.</returns>
-        public int Count => _storage.Count;
+        public int Count => Repository.Count;
 
         /// <summary>
         /// Adds a new <see cref="User"/> to the storage.
@@ -57,9 +46,8 @@ namespace UserStorageServices
         public virtual void Add(User user)
         {
             Validator.Validate(user);
-            user.Id = Identifier.Generate();
-
-            _storage.Add(user);
+            user.Id = ++((UserMemoryCache)Repository).PreviousIdentifier;
+            Repository.Add(user);
         }
 
         /// <summary>
@@ -79,7 +67,7 @@ namespace UserStorageServices
             if (resultUsers.Count() != 1)
                 throw new InvalidOperationException("Operation is invalid. Multiple choices possible");
 
-            _storage.Remove(resultUsers.First());
+            Repository.Remove(resultUsers.First());
         }
 
         /// <summary>
@@ -90,9 +78,7 @@ namespace UserStorageServices
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate), "Predicate must be not null");
 
-            var searchResult = _storage.Where(predicate);
-
-            return searchResult;
+            return Repository.Search(predicate);
         }
     }
 }

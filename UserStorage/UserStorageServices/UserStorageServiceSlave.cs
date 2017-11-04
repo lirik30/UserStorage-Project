@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UserStorageServices
 {
     public class UserStorageServiceSlave : UserStorageServiceBase, ISubscriber
     {
         public UserStorageServiceSlave(
-            IGenerateIdentifier identifier = null,
-            IUserValidator validator = null) : base(identifier, validator)
+            IUserValidator validator = null,
+            IUserRepository userRepository = null) : base(validator, userRepository)
         {  
         }
 
@@ -20,7 +17,7 @@ namespace UserStorageServices
         public override void Add(User user)
         {
             if (IsCallFromMaster())
-                base.Add(user);
+                Repository.Add(user);
 
             else
                 throw new NotSupportedException();
@@ -29,7 +26,7 @@ namespace UserStorageServices
         public override void Remove(User user)
         {
             if (IsCallFromMaster())
-                base.Remove(user);
+                Repository.Remove(user);
 
             else
                 throw new NotSupportedException();

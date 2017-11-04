@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 namespace UserStorageServices
 {
-    public interface IUserStorageService
+    public interface IUserRepository
     {
-        StorageMode StorageMode { get; }
-
         int Count { get; }
+
+        void Start();
+
+        void Stop();
 
         void Add(User user);
 

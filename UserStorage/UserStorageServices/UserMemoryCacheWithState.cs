@@ -18,11 +18,13 @@ namespace UserStorageServices
 
         public override void Start()
         {
+            base.Start();
             Storage = _serializer.DeserializeUsers();
         }
 
         public override void Stop()
         {
+            base.Stop();
             _serializer.SerializeUsers(Storage);
         }
     }

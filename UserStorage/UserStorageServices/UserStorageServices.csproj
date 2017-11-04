@@ -51,8 +51,6 @@
     <Compile Include="BinaryUserSerializer.cs" />
     <Compile Include="CompositeValidator.cs" />
     <Compile Include="FirstNameValidator.cs" />
-    <Compile Include="GuidGenerate.cs" />
-    <Compile Include="IGenerateIdentifier.cs" />
     <Compile Include="ISerializer.cs" />
     <Compile Include="ISubscriber.cs" />
     <Compile Include="IUserRepository.cs" />

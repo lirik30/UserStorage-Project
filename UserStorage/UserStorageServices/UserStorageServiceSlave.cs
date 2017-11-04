@@ -10,9 +10,8 @@ namespace UserStorageServices
     public class UserStorageServiceSlave : UserStorageServiceBase, ISubscriber
     {
         public UserStorageServiceSlave(
-            IGenerateIdentifier identifier = null,
             IUserValidator validator = null,
-            IUserRepository userRepository = null) : base(identifier, validator, userRepository)
+            IUserRepository userRepository = null) : base(validator, userRepository)
         {  
         }
 
@@ -21,7 +20,7 @@ namespace UserStorageServices
         public override void Add(User user)
         {
             if (IsCallFromMaster())
-                base.Add(user);
+                _repository.Add(user);
 
             else
                 throw new NotSupportedException();
@@ -30,7 +29,7 @@ namespace UserStorageServices
         public override void Remove(User user)
         {
             if (IsCallFromMaster())
-                base.Remove(user);
+                _repository.Remove(user);
 
             else
                 throw new NotSupportedException();

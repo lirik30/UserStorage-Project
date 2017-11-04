@@ -26,8 +26,7 @@ namespace UserStorageServices
         public UserStorageServiceMaster(
             IEnumerable<UserStorageServiceSlave> slaveServices = null, 
             IUserRepository userRepository = null,
-            IGenerateIdentifier identifier = null,
-            IUserValidator validator = null) : base(identifier, validator, userRepository)
+            IUserValidator validator = null) : base(validator, userRepository)
         {
             _slaveServices = slaveServices ?? new List<UserStorageServiceSlave>();
             foreach (var slave in _slaveServices)

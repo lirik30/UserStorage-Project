@@ -8,7 +8,7 @@ namespace UserStorageApp
     /// </summary>
     public class Client
     {
-        private readonly IUserStorageService _userStorageService;
+        private readonly UserStorageServiceMaster _userStorageService;
         private readonly IUserRepository _userRepository;
 
         /// <summary>
@@ -16,11 +16,11 @@ namespace UserStorageApp
         /// </summary>
         public Client(IUserStorageService userStorageService = null, IUserRepository userRepository = null)
         {
-            var slave1 = new UserStorageServiceSlave();
-            var slave2 = new UserStorageServiceSlave();
+            //var slave1 = new UserStorageServiceSlave();
+            //var slave2 = new UserStorageServiceSlave();
 
             _userRepository = userRepository ?? new UserMemoryCacheWithState();
-            _userStorageService = userStorageService ?? new UserStorageServiceMaster(new[] { slave1, slave2 }, _userRepository);
+            _userStorageService = (UserStorageServiceMaster)userStorageService ?? new UserStorageServiceMaster(userRepository: _userRepository);
         }
 
         /// <summary>
@@ -28,7 +28,13 @@ namespace UserStorageApp
         /// </summary>
         public void Run()
         {
-            _userRepository.Start();
+            var slave1 = new UserStorageServiceSlave(userRepository: _userRepository);
+            var slave2 = new UserStorageServiceSlave(userRepository: _userRepository);
+
+            _userStorageService.AddSubscriber(slave1);
+            _userStorageService.AddSubscriber(slave2);
+
+            //_userRepository.Start();
             _userStorageService.Add(new User
             {
                 FirstName = "Alex",
@@ -48,12 +54,9 @@ namespace UserStorageApp
                 Age = 19
             });
 
-            foreach (var user in _userStorageService.Search(x => x.FirstName != null))
-            {
-                Console.WriteLine($"First name: {user.FirstName}");
-                Console.WriteLine($"Last name: {user.LastName}");
-                Console.WriteLine($"Age: {user.Age}");
-            }
+            Console.WriteLine(_userStorageService.Count);
+            Console.WriteLine(slave1.Count);
+            Console.WriteLine(slave2.Count);
 
             _userRepository.Stop();
         }

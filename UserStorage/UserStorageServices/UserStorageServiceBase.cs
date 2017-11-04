@@ -19,12 +19,7 @@ namespace UserStorageServices
     /// </summary>
     public abstract class UserStorageServiceBase : IUserStorageService
     {
-        private readonly IUserRepository _repository;
-
-        /// <summary>
-        /// Provides an identifier generation strategy
-        /// </summary>
-        protected readonly IGenerateIdentifier Identifier;
+        protected readonly IUserRepository _repository;
 
         /// <summary>
         /// Provides a validation strategy
@@ -32,12 +27,10 @@ namespace UserStorageServices
         protected readonly IUserValidator Validator;
 
         protected UserStorageServiceBase(
-            IGenerateIdentifier identifier = null, 
             IUserValidator validator = null,
             IUserRepository repository = null)
         {
             _repository = repository ?? new UserMemoryCacheWithState();
-            Identifier = identifier ?? new GuidGenerate();
             Validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
         }
 
@@ -56,8 +49,7 @@ namespace UserStorageServices
         public virtual void Add(User user)
         {
             Validator.Validate(user);
-            user.Id = Identifier.Generate();
-
+            user.Id = ++((UserMemoryCache) _repository).PreviousIdentifier;
             _repository.Add(user);
         }
 

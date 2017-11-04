@@ -1,7 +1,6 @@
-﻿using System;
-using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UserStorageServices;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UserStorageServices.Repositories;
+using UserStorageServices.Serializers;
 
 namespace UserRepository.Tests
 {

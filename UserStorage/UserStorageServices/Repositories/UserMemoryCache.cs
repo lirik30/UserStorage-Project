@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
-namespace UserStorageServices
+namespace UserStorageServices.Repositories
 {
     public class UserMemoryCache : IUserRepository
     {

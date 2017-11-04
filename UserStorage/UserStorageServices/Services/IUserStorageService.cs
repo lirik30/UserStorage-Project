@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UserStorageServices
+namespace UserStorageServices.Services
 {
-    public interface IUserRepository
+    public interface IUserStorageService
     {
+        StorageMode StorageMode { get; }
+
         int Count { get; }
-
-        void Start();
-
-        void Stop();
 
         void Add(User user);
 

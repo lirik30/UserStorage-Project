@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using UserStorageServices.Repositories;
+using UserStorageServices.Validators;
 
-namespace UserStorageServices
+namespace UserStorageServices.Services
 {
     public class UserStorageServiceSlave : UserStorageServiceBase, ISubscriber
     {

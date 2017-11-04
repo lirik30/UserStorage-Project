@@ -1,6 +1,6 @@
 ﻿using UserStorageServices.Validation_exceptions;
 
-namespace UserStorageServices
+namespace UserStorageServices.Validators
 {
     public class LastNameValidator : IUserValidator
     {

@@ -1,5 +1,7 @@
 ﻿using System;
 using UserStorageServices;
+using UserStorageServices.Repositories;
+using UserStorageServices.Services;
 
 namespace UserStorageApp
 {

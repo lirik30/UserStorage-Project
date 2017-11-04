@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UserStorageServices.Repositories;
 using UserStorageServices.Validation_exceptions;
+using UserStorageServices.Validators;
 
-namespace UserStorageServices
+namespace UserStorageServices.Services
 {
     public enum StorageMode
     {

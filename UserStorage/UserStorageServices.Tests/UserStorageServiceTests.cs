@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.Win32;
+using UserStorageServices.Services;
 using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices.Tests

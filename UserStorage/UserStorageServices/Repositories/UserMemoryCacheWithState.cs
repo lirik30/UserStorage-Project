@@ -1,4 +1,6 @@
-﻿namespace UserStorageServices
+﻿using UserStorageServices.Serializers;
+
+namespace UserStorageServices.Repositories
 {
     public class UserMemoryCacheWithState : UserMemoryCache
     {

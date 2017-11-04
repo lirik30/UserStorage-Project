@@ -3,24 +3,23 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
-namespace UserStorageServices
+namespace UserStorageServices.Serializers
 {
-    public class XmlUserSerializer : ISerializer
+    public class BinaryUserSerializer : ISerializer
     {
         public void SerializeUsers(HashSet<User> users)
         {
             if (users == null)
                 throw new InvalidOperationException();
 
-            var path = ConfigurationManager.AppSettings["RepositoryXmlDataFile"];
+            var path = ConfigurationManager.AppSettings["RepositoryBinDataFile"];
             var fs = new FileStream(path, FileMode.Create);
             try
             {
-                var formatter = new XmlSerializer(typeof(HashSet<User>));
-                formatter.Serialize(XmlWriter.Create(fs), users);
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(fs, users);
             }
             catch (SerializationException e)
             {
@@ -35,14 +34,14 @@ namespace UserStorageServices
 
         public HashSet<User> DeserializeUsers()
         {
-            var path = ConfigurationManager.AppSettings["RepositoryXmlDataFile"];
+            var path = ConfigurationManager.AppSettings["RepositoryBinDataFile"];
             try
             {
                 var fs = new FileStream(path, FileMode.Open);
                 try
                 {
-                    var formatter = new XmlSerializer(typeof(HashSet<User>));
-                    var temp = (HashSet<User>)formatter.Deserialize(XmlReader.Create(fs));
+                    var formatter = new BinaryFormatter();
+                    var temp = (HashSet<User>)formatter.Deserialize(fs);
                     return temp;
                 }
                 catch (SerializationException e)

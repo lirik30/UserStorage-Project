@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using UserStorageServices.Repositories;
+using UserStorageServices.Validators;
 
-namespace UserStorageServices
+namespace UserStorageServices.Services
 {
     public class UserStorageServiceMaster : UserStorageServiceBase
     {

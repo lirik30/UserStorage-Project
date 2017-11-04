@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace UserStorageServices
+namespace UserStorageServices.Serializers
 {
     public interface ISerializer
     {

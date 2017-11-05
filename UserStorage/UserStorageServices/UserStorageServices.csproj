@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Notifications\NotificationContainer.cs" />
     <Compile Include="Repositories\IUserRepositoryManager.cs" />
     <Compile Include="Serializers\IdentifierSerializer.cs" />
     <Compile Include="Validators\AgeValidator.cs" />

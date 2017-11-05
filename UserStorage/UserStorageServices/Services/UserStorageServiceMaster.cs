@@ -51,6 +51,10 @@ namespace UserStorageServices.Services
             UserRemovedEvent -= subscriber.UserRemoved;
         }
 
+        /// <summary>
+        /// Addition of the user in the master node.
+        /// </summary>
+        /// <param name="user"></param>
         public override void Add(User user)
         {
             base.Add(user);
@@ -58,6 +62,10 @@ namespace UserStorageServices.Services
             OnUserAdded(new StorageChangeEventArgs(user));
         }
 
+        /// <summary>
+        /// Removal user from the master node
+        /// </summary>
+        /// <param name="user"></param>
         public override void Remove(User user)
         {
             base.Remove(user);

@@ -7,9 +7,12 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace UserStorageServices.Serializers
 {
-    public class BinaryUserSerializer : ISerializer
+    /// <summary>
+    /// Provides functionality to saving and loading users collection to the binary file
+    /// </summary>
+    public class BinaryUserSerializer : ISerializer<HashSet<User>>
     {
-        public void SerializeUsers(HashSet<User> users)
+        public void Serialize(HashSet<User> users)
         {
             if (users == null)
                 throw new InvalidOperationException();
@@ -32,7 +35,7 @@ namespace UserStorageServices.Serializers
             }
         }
 
-        public HashSet<User> DeserializeUsers()
+        public HashSet<User> Deserialize()
         {
             var path = ConfigurationManager.AppSettings["RepositoryBinDataFile"];
             try

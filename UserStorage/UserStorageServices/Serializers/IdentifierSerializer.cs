@@ -1,29 +1,27 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Runtime.Serialization;
-using System.Xml;
-using System.Xml.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace UserStorageServices.Serializers
 {
     /// <summary>
-    /// Provides functionality to saving and loading users collection to the XML file
+    /// Provides functionality for the saving and loading of the last identifier
     /// </summary>
-    public class XmlUserSerializer : ISerializer<HashSet<User>>
+    public class IdentifierSerializer : ISerializer<int>
     {
-        public void Serialize(HashSet<User> users)
+        /// <summary>
+        /// Save the identfier
+        /// </summary>
+        /// <param name="data"></param>
+        public void Serialize(int data)
         {
-            if (users == null)
-                throw new InvalidOperationException();
-
-            var path = ConfigurationManager.AppSettings["RepositoryXmlDataFile"];
-            var fs = new FileStream(path, FileMode.Create);
+            var fs = new FileStream("identifier.bin", FileMode.Create);
             try
             {
-                var formatter = new XmlSerializer(typeof(HashSet<User>));
-                formatter.Serialize(XmlWriter.Create(fs), users);
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(fs, data);
             }
             catch (SerializationException e)
             {
@@ -36,17 +34,20 @@ namespace UserStorageServices.Serializers
             }
         }
 
-        public HashSet<User> Deserialize()
+        /// <summary>
+        /// Load the identifier
+        /// </summary>
+        /// <returns>Deserialized identifier</returns>
+        public int Deserialize()
         {
-            var path = ConfigurationManager.AppSettings["RepositoryXmlDataFile"];
             try
             {
+                var path = ConfigurationManager.AppSettings["IdentifierFile"];
                 var fs = new FileStream(path, FileMode.Open);
                 try
                 {
-                    var formatter = new XmlSerializer(typeof(HashSet<User>));
-                    var temp = (HashSet<User>)formatter.Deserialize(XmlReader.Create(fs));
-                    return temp;
+                    var formatter = new BinaryFormatter();
+                   return (int)formatter.Deserialize(fs);
                 }
                 catch (SerializationException e)
                 {

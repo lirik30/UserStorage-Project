@@ -18,6 +18,9 @@ namespace UserStorageServices.Services
     /// </summary>
     public abstract class UserStorageServiceBase : IUserStorageService
     {
+        /// <summary>
+        /// Users repository
+        /// </summary>
         protected readonly IUserRepository Repository;
 
         /// <summary>
@@ -33,6 +36,9 @@ namespace UserStorageServices.Services
             Validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
         }
 
+        /// <summary>
+        /// Mode of the working
+        /// </summary>
         public abstract StorageMode StorageMode { get; }
 
         /// <summary>

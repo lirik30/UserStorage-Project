@@ -7,10 +7,6 @@ namespace UserStorageServices.Repositories
     {
         int Count { get; }
 
-        void Start();
-
-        void Stop();
-
         void Add(User user);
 
         void Remove(User user);

@@ -1,26 +1,45 @@
-﻿using UserStorageServices.Serializers;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using UserStorageServices.Serializers;
 
 namespace UserStorageServices.Repositories
 {
-    public class UserMemoryCacheWithState : UserMemoryCache
+    public class UserMemoryCacheWithState : UserMemoryCache, IUserRepositoryManager
     {
-        private readonly ISerializer _serializer;
+        /// <summary>
+        /// Serializer for the users
+        /// </summary>
+        private readonly ISerializer<HashSet<User>> _serializer;
 
-        public UserMemoryCacheWithState(ISerializer serializer = null)
+        /// <summary>
+        /// Serializer for the identifier
+        /// </summary>
+        private readonly ISerializer<int> _identifierSerializer = new IdentifierSerializer();
+
+        public UserMemoryCacheWithState(ISerializer<HashSet<User>> serializer = null)
         {
             _serializer = serializer ?? new XmlUserSerializer();
         }
 
-        public override void Start()
+        /// <summary>
+        /// Start working of the repository. Loading an identifier and the users
+        /// </summary>
+        public void Start()
         {
-            base.Start();
-            storage = _serializer.DeserializeUsers();
+            PreviousIdentifier = _identifierSerializer.Deserialize();
+            storage = _serializer.Deserialize();
         }
 
-        public override void Stop()
+        /// <summary>
+        /// Stop working of the repository. Saving an identifier and the users
+        /// </summary>
+        public void Stop()
         {
-            base.Stop();
-            _serializer.SerializeUsers(storage);
+            _identifierSerializer.Serialize(PreviousIdentifier);
+            _serializer.Serialize(storage);
         }
     }
 }

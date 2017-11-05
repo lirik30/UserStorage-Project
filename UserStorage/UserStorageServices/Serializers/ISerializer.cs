@@ -1,11 +1,9 @@
-﻿using System.Collections.Generic;
-
-namespace UserStorageServices.Serializers
+﻿namespace UserStorageServices.Serializers
 {
-    public interface ISerializer
+    public interface ISerializer<T>
     {
-        void SerializeUsers(HashSet<User> users);
+        void Serialize(T data);
 
-        HashSet<User> DeserializeUsers();
+        T Deserialize();
     }
 }

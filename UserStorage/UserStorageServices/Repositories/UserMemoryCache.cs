@@ -18,53 +18,6 @@ namespace UserStorageServices.Repositories
 
         public int Count => storage.Count;
 
-        public virtual void Start()
-        {
-            try
-            {
-                var fs = new FileStream("identifier.bin", FileMode.Open);
-                try
-                {
-                    var formatter = new BinaryFormatter();
-                    var temp = (int)formatter.Deserialize(fs);
-                    PreviousIdentifier = temp;
-                }
-                catch (SerializationException e)
-                {
-                    Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
-                    throw;
-                }
-                finally
-                {
-                    fs.Close();
-                }
-            }
-            catch (FileNotFoundException e)
-            {
-                Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
-                throw;
-            }
-        }
-
-        public virtual void Stop()
-        {
-            var fs = new FileStream("identifier.bin", FileMode.Create);
-            try
-            {
-                var formatter = new BinaryFormatter();
-                formatter.Serialize(fs, PreviousIdentifier);
-            }
-            catch (SerializationException e)
-            {
-                Console.WriteLine("Failed to serialize. Reason: " + e.Message);
-                throw;
-            }
-            finally
-            {
-                fs.Close();
-            }
-        }
-
         public void Add(User user)
         {
             storage.Add(user);

@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace UserStorageServices
+namespace UserStorageServices.Repositories
 {
-    public interface IUserStorageService
+    public interface IUserRepository
     {
-        StorageMode StorageMode { get; }
-
         int Count { get; }
 
         void Add(User user);

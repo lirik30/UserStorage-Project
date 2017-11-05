@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using UserStorageServices.Repositories;
+using UserStorageServices.Validators;
 
-namespace UserStorageServices
+namespace UserStorageServices.Services
 {
     public class UserStorageServiceMaster : UserStorageServiceBase
     {
@@ -49,6 +51,10 @@ namespace UserStorageServices
             UserRemovedEvent -= subscriber.UserRemoved;
         }
 
+        /// <summary>
+        /// Addition of the user in the master node.
+        /// </summary>
+        /// <param name="user"></param>
         public override void Add(User user)
         {
             base.Add(user);
@@ -56,6 +62,10 @@ namespace UserStorageServices
             OnUserAdded(new StorageChangeEventArgs(user));
         }
 
+        /// <summary>
+        /// Removal user from the master node
+        /// </summary>
+        /// <param name="user"></param>
         public override void Remove(User user)
         {
             base.Remove(user);

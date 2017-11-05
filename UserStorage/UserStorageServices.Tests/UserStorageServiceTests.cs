@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Win32;
+using UserStorageServices.Repositories;
+using UserStorageServices.Services;
 using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices.Tests
@@ -161,9 +162,11 @@ namespace UserStorageServices.Tests
         public void Remove_RemovalInMasterNode_OneElementInSlaveNode()
         {
             // Arrange
-            var slave1 = new UserStorageServiceSlave();
-            var slave2 = new UserStorageServiceSlave();
-            var userStorageService = new UserStorageServiceMaster(new[] { slave1, slave2 });
+            IUserRepository repository = new UserMemoryCache();
+
+            var slave1 = new UserStorageServiceSlave(userRepository: repository);
+            var slave2 = new UserStorageServiceSlave(userRepository: repository);
+            var userStorageService = new UserStorageServiceMaster(userRepository: repository, slaveServices: new[] { slave1, slave2 });
             userStorageService.Add(new User
             {
                 FirstName = "Pavel",

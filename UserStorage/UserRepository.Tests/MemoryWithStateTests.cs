@@ -1,7 +1,6 @@
-﻿using System;
-using System.IO;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using UserStorageServices;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using UserStorageServices.Repositories;
+using UserStorageServices.Serializers;
 
 namespace UserRepository.Tests
 {
@@ -11,28 +10,28 @@ namespace UserRepository.Tests
         [TestMethod]
         public void LoadRepositoryState_RepositoryBin_PositiveRes()
         {
-            IUserRepository repository = new UserMemoryCacheWithState(new BinaryUserSerializer());
+            IUserRepositoryManager repository = new UserMemoryCacheWithState(new BinaryUserSerializer());
             repository.Start();
         }
 
         [TestMethod]
         public void SaveRepositoryState_RepositoryBin_PossibleRes()
         {
-            IUserRepository repository = new UserMemoryCacheWithState(new BinaryUserSerializer());
+            IUserRepositoryManager repository = new UserMemoryCacheWithState(new BinaryUserSerializer());
             repository.Stop();
         }
 
         [TestMethod]
         public void LoadRepositoryState_RepositoryXml_PositiveRes()
         {
-            IUserRepository repository = new UserMemoryCacheWithState(new XmlUserSerializer());
+            IUserRepositoryManager repository = new UserMemoryCacheWithState(new XmlUserSerializer());
             repository.Start();
         }
 
         [TestMethod]
         public void SaveRepositoryState_RepositoryXml_PossibleRes()
         {
-            IUserRepository repository = new UserMemoryCacheWithState(new XmlUserSerializer());
+            IUserRepositoryManager repository = new UserMemoryCacheWithState(new XmlUserSerializer());
             repository.Stop();
         }
     }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UserStorageServices.Repositories;
 using UserStorageServices.Validation_exceptions;
+using UserStorageServices.Validators;
 
-namespace UserStorageServices
+namespace UserStorageServices.Services
 {
     public enum StorageMode
     {
@@ -16,6 +18,9 @@ namespace UserStorageServices
     /// </summary>
     public abstract class UserStorageServiceBase : IUserStorageService
     {
+        /// <summary>
+        /// Users repository
+        /// </summary>
         protected readonly IUserRepository Repository;
 
         /// <summary>
@@ -31,6 +36,9 @@ namespace UserStorageServices
             Validator = validator ?? new CompositeValidator(new IUserValidator[] { new AgeValidator(), new LastNameValidator(), new FirstNameValidator() });
         }
 
+        /// <summary>
+        /// Mode of the working
+        /// </summary>
         public abstract StorageMode StorageMode { get; }
 
         /// <summary>

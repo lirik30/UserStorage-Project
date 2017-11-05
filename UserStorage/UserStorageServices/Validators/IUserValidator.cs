@@ -1,4 +1,4 @@
-﻿namespace UserStorageServices
+﻿namespace UserStorageServices.Validators
 {
     public interface IUserValidator
     {

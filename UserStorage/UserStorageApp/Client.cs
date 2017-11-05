@@ -1,5 +1,7 @@
 ﻿using System;
 using UserStorageServices;
+using UserStorageServices.Repositories;
+using UserStorageServices.Services;
 
 namespace UserStorageApp
 {
@@ -8,16 +10,23 @@ namespace UserStorageApp
     /// </summary>
     public class Client
     {
+        /// <summary>
+        /// Master node
+        /// </summary>
         private readonly UserStorageServiceMaster _userStorageService;
-        private readonly IUserRepository _userRepository;
+
+        /// <summary>
+        /// Repository manager
+        /// </summary>
+        private readonly IUserRepositoryManager _userRepositoryManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
         /// </summary>
-        public Client(IUserStorageService userStorageService = null, IUserRepository userRepository = null)
+        public Client(UserStorageServiceMaster userStorageService = null, IUserRepositoryManager userRepositoryManager = null)
         {
-            _userRepository = userRepository ?? new UserMemoryCacheWithState();
-            _userStorageService = (UserStorageServiceMaster)userStorageService ?? new UserStorageServiceMaster(userRepository: _userRepository);
+            _userRepositoryManager = userRepositoryManager ?? new UserMemoryCacheWithState();
+            _userStorageService = userStorageService ?? new UserStorageServiceMaster(userRepository: _userRepositoryManager as IUserRepository);
         }
 
         /// <summary>
@@ -25,13 +34,13 @@ namespace UserStorageApp
         /// </summary>
         public void Run()
         {
-            var slave1 = new UserStorageServiceSlave(userRepository: _userRepository);
-            var slave2 = new UserStorageServiceSlave(userRepository: _userRepository);
+            var slave1 = new UserStorageServiceSlave(userRepository: _userRepositoryManager as IUserRepository);
+            var slave2 = new UserStorageServiceSlave(userRepository: _userRepositoryManager as IUserRepository);
 
             _userStorageService.AddSubscriber(slave1);
             _userStorageService.AddSubscriber(slave2);
 
-            // _userRepository.Start();
+            // _userRepositoryManager.Start();
             _userStorageService.Add(new User
             {
                 FirstName = "Alex",
@@ -55,7 +64,12 @@ namespace UserStorageApp
             Console.WriteLine(slave1.Count);
             Console.WriteLine(slave2.Count);
 
-            _userRepository.Stop();
+            foreach (var user in _userStorageService.Search(x => x.FirstName != null))
+            {
+                Console.WriteLine($"Id: {user.Id}");
+            }    
+
+            _userRepositoryManager.Stop();
         }
     }
 }

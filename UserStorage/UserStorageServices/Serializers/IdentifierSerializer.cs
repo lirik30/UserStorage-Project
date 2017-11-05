@@ -12,9 +12,9 @@ namespace UserStorageServices.Serializers
     public class IdentifierSerializer : ISerializer<int>
     {
         /// <summary>
-        /// Save the identfier
+        /// Save the identifier
         /// </summary>
-        /// <param name="data"></param>
+        /// <param name="data">Data to the serialize</param>
         public void Serialize(int data)
         {
             var fs = new FileStream("identifier.bin", FileMode.Create);

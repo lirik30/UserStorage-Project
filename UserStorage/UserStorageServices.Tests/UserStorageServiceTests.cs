@@ -161,8 +161,9 @@ namespace UserStorageServices.Tests
         [TestMethod]
         public void Remove_RemovalInMasterNode_OneElementInSlaveNode()
         {
-            IUserRepository repository = new UserMemoryCache();
             // Arrange
+            IUserRepository repository = new UserMemoryCache();
+
             var slave1 = new UserStorageServiceSlave(userRepository: repository);
             var slave2 = new UserStorageServiceSlave(userRepository: repository);
             var userStorageService = new UserStorageServiceMaster(userRepository: repository, slaveServices: new[] { slave1, slave2 });

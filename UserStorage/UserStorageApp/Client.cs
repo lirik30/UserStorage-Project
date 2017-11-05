@@ -40,7 +40,7 @@ namespace UserStorageApp
             _userStorageService.AddSubscriber(slave1);
             _userStorageService.AddSubscriber(slave2);
 
-            //_userRepositoryManager.Start();
+            // _userRepositoryManager.Start();
             _userStorageService.Add(new User
             {
                 FirstName = "Alex",

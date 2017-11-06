@@ -31,7 +31,6 @@ namespace UserStorageApp
         {
             _userRepositoryManager = userRepositoryManager ?? new UserMemoryCacheWithState();
 
-            
             var sender = new NotificationSender(_receiver);
             _userStorageService = userStorageService ?? new UserStorageServiceMaster(userRepository: _userRepositoryManager as IUserRepository, sender: sender);
         }
@@ -42,8 +41,8 @@ namespace UserStorageApp
         public void Run()
         {
 
-            var slave1 = new UserStorageServiceSlave(userRepository: _userRepositoryManager as IUserRepository, receiver: _receiver);
-            var slave2 = new UserStorageServiceSlave(userRepository: _userRepositoryManager as IUserRepository, receiver: _receiver);
+            var slave1 = new UserStorageServiceSlave(_receiver);
+            var slave2 = new UserStorageServiceSlave(_receiver);
             
             _userRepositoryManager.Start();
             _userStorageService.Add(new User

@@ -7,6 +7,7 @@ using System.Xml.Serialization;
 
 namespace UserStorageServices.Notifications
 {
+    [Serializable]
     [XmlRoot("NotificationContainer", IsNullable = false, Namespace = "http://tempuri.org/userService/notification")]
     public class NotificationContainer
     {
@@ -15,6 +16,7 @@ namespace UserStorageServices.Notifications
         public Notification[] Notifications { get; set; }
     }
 
+    [Serializable]
     public class Notification
     {
         [XmlIgnore]
@@ -26,6 +28,7 @@ namespace UserStorageServices.Notifications
         public object Action { get; set; }
     }
 
+    [Serializable]
     [XmlType(IncludeInSchema = false)]
     public enum NotificationType
     {
@@ -36,13 +39,15 @@ namespace UserStorageServices.Notifications
         DeleteUser
     }
 
-    class DeleteUserActionNotification
+    [Serializable]
+    public class DeleteUserActionNotification
     {
         [XmlElement("user")]
         public User User { get; set; }
     }
 
-    class AddUserActionNotification
+    [Serializable]
+    public class AddUserActionNotification
     {
         [XmlElement("user")]
         public User User { get; set; }

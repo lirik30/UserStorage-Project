@@ -1,5 +1,6 @@
 ﻿using System;
 using UserStorageServices;
+using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Services;
 
@@ -20,13 +21,19 @@ namespace UserStorageApp
         /// </summary>
         private readonly IUserRepositoryManager _userRepositoryManager;
 
+
+        private readonly NotificationReceiver _receiver = new NotificationReceiver();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
         /// </summary>
         public Client(UserStorageServiceMaster userStorageService = null, IUserRepositoryManager userRepositoryManager = null)
         {
             _userRepositoryManager = userRepositoryManager ?? new UserMemoryCacheWithState();
-            _userStorageService = userStorageService ?? new UserStorageServiceMaster(userRepository: _userRepositoryManager as IUserRepository);
+
+            
+            var sender = new NotificationSender(_receiver);
+            _userStorageService = userStorageService ?? new UserStorageServiceMaster(userRepository: _userRepositoryManager as IUserRepository, sender: sender);
         }
 
         /// <summary>
@@ -34,13 +41,11 @@ namespace UserStorageApp
         /// </summary>
         public void Run()
         {
-            var slave1 = new UserStorageServiceSlave(userRepository: _userRepositoryManager as IUserRepository);
-            var slave2 = new UserStorageServiceSlave(userRepository: _userRepositoryManager as IUserRepository);
 
-            _userStorageService.AddSubscriber(slave1);
-            _userStorageService.AddSubscriber(slave2);
-
-            // _userRepositoryManager.Start();
+            var slave1 = new UserStorageServiceSlave(userRepository: _userRepositoryManager as IUserRepository, receiver: _receiver);
+            var slave2 = new UserStorageServiceSlave(userRepository: _userRepositoryManager as IUserRepository, receiver: _receiver);
+            
+            _userRepositoryManager.Start();
             _userStorageService.Add(new User
             {
                 FirstName = "Alex",

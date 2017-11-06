@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Validators;
 
@@ -7,49 +8,22 @@ namespace UserStorageServices.Services
 {
     public class UserStorageServiceMaster : UserStorageServiceBase
     {
-        /// <summary>
-        /// Notifies slaves about user addition in master
-        /// </summary>
-        public EventHandler<StorageChangeEventArgs> UserAddedEvent = delegate { };
 
-        /// <summary>
-        /// Notifies slaves about user removal in master
-        /// </summary>
-        public EventHandler<StorageChangeEventArgs> UserRemovedEvent = delegate { };
-
-        /// <summary>
-        /// Provides data replication for master node
-        /// </summary>
-        private readonly IEnumerable<IUserStorageService> _slaveServices;
+        private readonly INotificationSender _sender;
 
         public UserStorageServiceMaster(
-            IEnumerable<UserStorageServiceSlave> slaveServices = null, 
+            INotificationSender sender = null, 
             IUserRepository userRepository = null,
             IUserValidator validator = null) : base(validator, userRepository)
         {
-            _slaveServices = slaveServices ?? new List<UserStorageServiceSlave>();
-            foreach (var slave in _slaveServices)
-            {
-                AddSubscriber(slave as ISubscriber);
-            }
+            _sender = sender ?? new NotificationSender();
         }
 
         /// <summary>
         /// Mode of the storage
         /// </summary>
         public override StorageMode StorageMode => StorageMode.MasterNode;
-
-        public void AddSubscriber(ISubscriber subscriber)
-        {
-            UserAddedEvent += subscriber.UserAdded;
-            UserRemovedEvent += subscriber.UserRemoved;
-        }
-
-        public void RemoveSubscriber(ISubscriber subscriber)
-        {
-            UserAddedEvent -= subscriber.UserAdded;
-            UserRemovedEvent -= subscriber.UserRemoved;
-        }
+        
 
         /// <summary>
         /// Addition of the user in the master node.
@@ -59,7 +33,7 @@ namespace UserStorageServices.Services
         {
             base.Add(user);
 
-            OnUserAdded(new StorageChangeEventArgs(user));
+            OnUserAdded(user);
         }
 
         /// <summary>
@@ -70,27 +44,45 @@ namespace UserStorageServices.Services
         {
             base.Remove(user);
 
-            OnUserRemoved(new StorageChangeEventArgs(user));
+            OnUserRemoved(user);
         }
 
         /// <summary>
         /// Occurs when the user is added to the master
         /// </summary>
         /// <param name="eventArgs">Information about added user</param>
-        private void OnUserAdded(StorageChangeEventArgs eventArgs)
+        private void OnUserAdded(User user)
         {
-            EventHandler<StorageChangeEventArgs> temp = UserAddedEvent;
-            temp?.Invoke(this, eventArgs);
+            _sender.Send(new NotificationContainer
+            {
+                Notifications = new[]
+                {
+                    new Notification
+                    {
+                        Action = new AddUserActionNotification {User = user},
+                        Type = NotificationType.AddUser
+                    }
+                }
+            });
         }
 
         /// <summary>
         /// Occurs when the user is removed from the storage
         /// </summary>
         /// <param name="eventArgs">Information about removed user</param>
-        private void OnUserRemoved(StorageChangeEventArgs eventArgs)
+        private void OnUserRemoved(User user) 
         {
-            EventHandler<StorageChangeEventArgs> temp = UserRemovedEvent;
-            temp?.Invoke(this, eventArgs);
+            _sender.Send(new NotificationContainer
+            {
+                Notifications = new[]
+                {
+                    new Notification
+                    {
+                        Action = new DeleteUserActionNotification(){ User = user},
+                        Type = NotificationType.DeleteUser
+                    }
+                }
+            });
         }
     }
 }

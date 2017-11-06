@@ -47,7 +47,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Notifications\INotificationReceiver.cs" />
+    <Compile Include="Notifications\INotificationSender.cs" />
     <Compile Include="Notifications\NotificationContainer.cs" />
+    <Compile Include="Notifications\NotificationReceiver.cs" />
+    <Compile Include="Notifications\NotificationSender.cs" />
     <Compile Include="Repositories\IUserRepositoryManager.cs" />
     <Compile Include="Serializers\IdentifierSerializer.cs" />
     <Compile Include="Validators\AgeValidator.cs" />

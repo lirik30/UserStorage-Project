@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Validators;
 
 namespace UserStorageServices.Services
 {
-    public class UserStorageServiceSlave : UserStorageServiceBase, ISubscriber
+    public class UserStorageServiceSlave : UserStorageServiceBase
     {
         private INotificationReceiver _receiver;
 
@@ -25,7 +26,10 @@ namespace UserStorageServices.Services
         public override void Add(User user)
         {
             if (IsCallFromMaster())
-                Repository.Add(user);   
+            {
+                //Console.WriteLine("RECEIVE!");
+                Repository.Add(user);
+            }
 
             else
                 throw new NotSupportedException();
@@ -39,10 +43,6 @@ namespace UserStorageServices.Services
             else
                 throw new NotSupportedException();
         }
-
-        public void UserAdded(object sender, StorageChangeEventArgs eventArgs) => Add(eventArgs.User);
-
-        public void UserRemoved(object sender, StorageChangeEventArgs eventArgs) => Remove(eventArgs.User);
 
         public void NotificationReceived(NotificationContainer container)
         {
@@ -67,10 +67,10 @@ namespace UserStorageServices.Services
         private bool IsCallFromMaster()
         {
             var stackTrace = new StackTrace();
-            var callFrom = stackTrace.GetFrame(1).GetMethod();
-            var suchMethodInMaster = typeof(UserStorageServiceMaster).GetMethod(callFrom.Name);
-            return stackTrace.GetFrames()?.Select(x => x.GetMethod())
-                .Contains(suchMethodInMaster) ?? false;
+            var addMethod = typeof(UserStorageServiceMaster).GetMethod("Add");
+            var onUserAddedMethod = typeof(UserStorageServiceMaster).GetMethod("OnUserAdded", BindingFlags.Instance | BindingFlags.NonPublic); //как получить приватный метод из класса?
+            var methods = stackTrace.GetFrames()?.Select(x => x.GetMethod());
+            return methods.Contains(addMethod) || methods.Contains(onUserAddedMethod);
         }
     }
 }

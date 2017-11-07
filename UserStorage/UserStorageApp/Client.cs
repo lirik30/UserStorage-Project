@@ -24,6 +24,8 @@ namespace UserStorageApp
 
         private readonly NotificationReceiver _receiver = new NotificationReceiver();
 
+        private readonly UserStorageServiceSlave[] slaves = new UserStorageServiceSlave[2];
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
         /// </summary>
@@ -32,6 +34,9 @@ namespace UserStorageApp
             _userRepositoryManager = userRepositoryManager ?? new UserMemoryCacheWithState();
 
             var sender = new NotificationSender(_receiver);
+
+            slaves[0] = new UserStorageServiceSlave(receiver: _receiver);
+            slaves[1] = new UserStorageServiceSlave(receiver: _receiver);
             _userStorageService = userStorageService ?? new UserStorageServiceMaster(userRepository: _userRepositoryManager as IUserRepository, sender: sender);
         }
 
@@ -39,12 +44,8 @@ namespace UserStorageApp
         /// Runs a sequence of actions on an instance of the <see cref="UserStorageServiceBase"/> class.
         /// </summary>
         public void Run()
-        {
-
-            var slave1 = new UserStorageServiceSlave(_receiver);
-            var slave2 = new UserStorageServiceSlave(_receiver);
-            
-            _userRepositoryManager.Start();
+        {   
+            //_userRepositoryManager.Start();
             _userStorageService.Add(new User
             {
                 FirstName = "Alex",
@@ -65,15 +66,15 @@ namespace UserStorageApp
             });
 
             Console.WriteLine(_userStorageService.Count);
-            Console.WriteLine(slave1.Count);
-            Console.WriteLine(slave2.Count);
+            Console.WriteLine(slaves[0].Count);
+            Console.WriteLine(slaves[1].Count);
 
             foreach (var user in _userStorageService.Search(x => x.FirstName != null))
             {
                 Console.WriteLine($"Id: {user.Id}");
             }    
 
-            _userRepositoryManager.Stop();
+            //_userRepositoryManager.Stop();
         }
     }
 }

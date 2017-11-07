@@ -57,10 +57,9 @@ namespace UserStorageServices.Serializers
                     fs.Close();
                 }
             }
-            catch (FileNotFoundException e)
+            catch (FileNotFoundException)
             {
-                Console.WriteLine("Failed to deserialize. Reason: " + e.Message);
-                throw;
+                return new HashSet<User>();
             }
         }
     }

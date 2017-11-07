@@ -1,0 +1,1 @@
+﻿<?xml version="1.0" encoding="utf-8"?><ArrayOfUser xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"><User><Id>1</Id><FirstName>Pavel</FirstName><LastName>Pavlov</LastName><Age>25</Age></User><User><Id>3</Id><FirstName>Pavel</FirstName><LastName>Pavlov</LastName><Age>25</Age></User></ArrayOfUser>

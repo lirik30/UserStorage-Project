@@ -17,6 +17,16 @@ namespace UserStorageServices.Services
             IUserValidator validator = null) : base(validator, userRepository)
         {
             _sender = sender ?? new NotificationSender();
+            (Repository as IUserRepositoryManager)?.Start();
+            foreach (var user in Repository.Search(x => x.FirstName != null))
+            {
+                OnUserAdded(user);
+            }
+        }
+
+        ~UserStorageServiceMaster()
+        {
+            (Repository as IUserRepositoryManager)?.Stop();
         }
 
         /// <summary>
@@ -50,7 +60,7 @@ namespace UserStorageServices.Services
         /// <summary>
         /// Occurs when the user is added to the master
         /// </summary>
-        /// <param name="eventArgs">Information about added user</param>
+        /// <param name="user">Information about added user</param>
         private void OnUserAdded(User user)
         {
             _sender.Send(new NotificationContainer
@@ -69,7 +79,7 @@ namespace UserStorageServices.Services
         /// <summary>
         /// Occurs when the user is removed from the storage
         /// </summary>
-        /// <param name="eventArgs">Information about removed user</param>
+        /// <param name="user">Information about removed user</param>
         private void OnUserRemoved(User user) 
         {
             _sender.Send(new NotificationContainer

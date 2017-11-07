@@ -30,7 +30,10 @@ namespace UserStorageServices.Repositories
         public void Start()
         {
             PreviousIdentifier = _identifierSerializer.Deserialize();
-            storage = _serializer.Deserialize();
+            foreach (var user in _serializer.Deserialize())
+            {
+                Add(user);
+            }
         }
 
         /// <summary>

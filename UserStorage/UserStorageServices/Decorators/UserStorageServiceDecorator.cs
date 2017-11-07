@@ -12,7 +12,7 @@ namespace UserStorageServices.Decorators
         {
             var slave1 = new UserStorageServiceSlave();
             var slave2 = new UserStorageServiceSlave();
-            Wrappee = wrappee ?? new UserStorageServiceMaster(new[] { slave1, slave2 });
+            Wrappee = wrappee ?? new UserStorageServiceMaster();
         }
 
         public StorageMode StorageMode => Wrappee.StorageMode;

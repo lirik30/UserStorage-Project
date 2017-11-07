@@ -15,41 +15,4 @@ namespace UserStorageServices.Notifications
         [XmlArrayItem("notification")]
         public Notification[] Notifications { get; set; }
     }
-
-    [Serializable]
-    public class Notification
-    {
-        [XmlIgnore]
-        public NotificationType Type { get; set; }
-
-        [XmlElement("addUser", typeof(AddUserActionNotification))]
-        [XmlElement("deleteUser", typeof(DeleteUserActionNotification))]
-        [XmlChoiceIdentifier("Type")]
-        public object Action { get; set; }
-    }
-
-    [Serializable]
-    [XmlType(IncludeInSchema = false)]
-    public enum NotificationType
-    {
-        [XmlEnum("addUser")]
-        AddUser,
-
-        [XmlEnum("deleteUser")]
-        DeleteUser
-    }
-
-    [Serializable]
-    public class DeleteUserActionNotification
-    {
-        [XmlElement("user")]
-        public User User { get; set; }
-    }
-
-    [Serializable]
-    public class AddUserActionNotification
-    {
-        [XmlElement("user")]
-        public User User { get; set; }
-    }
 }

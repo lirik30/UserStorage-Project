@@ -12,12 +12,12 @@ namespace UserStorageServices.Notifications
 {
     public class NotificationReceiver : INotificationReceiver
     {
-        public event Action<NotificationContainer> received = delegate{ }; 
+        public event Action<NotificationContainer> Received = delegate { }; 
 
         public void Receive(string receiveString)
         {
             var container = Deserialize(receiveString);
-            received(container);
+            Received(container);
         }
 
         private NotificationContainer Deserialize(string receiveString)

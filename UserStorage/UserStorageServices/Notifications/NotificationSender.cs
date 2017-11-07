@@ -15,7 +15,7 @@ namespace UserStorageServices.Notifications
 
         public NotificationSender(INotificationReceiver receiver = null)
         {
-            _receiver = receiver ?? new NotificationReceiver(); //add default value
+            _receiver = receiver ?? new NotificationReceiver();
         }
 
         public void Send(NotificationContainer container)

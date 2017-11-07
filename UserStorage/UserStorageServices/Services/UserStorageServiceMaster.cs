@@ -8,7 +8,6 @@ namespace UserStorageServices.Services
 {
     public class UserStorageServiceMaster : UserStorageServiceBase
     {
-
         private readonly INotificationSender _sender;
 
         public UserStorageServiceMaster(
@@ -33,7 +32,6 @@ namespace UserStorageServices.Services
         /// Mode of the storage
         /// </summary>
         public override StorageMode StorageMode => StorageMode.MasterNode;
-        
 
         /// <summary>
         /// Addition of the user in the master node.
@@ -69,7 +67,7 @@ namespace UserStorageServices.Services
                 {
                     new Notification
                     {
-                        Action = new AddUserActionNotification {User = user},
+                        Action = new AddUserActionNotification { User = user },
                         Type = NotificationType.AddUser
                     }
                 }
@@ -88,7 +86,7 @@ namespace UserStorageServices.Services
                 {
                     new Notification
                     {
-                        Action = new DeleteUserActionNotification(){ User = user},
+                        Action = new DeleteUserActionNotification { User = user },
                         Type = NotificationType.DeleteUser
                     }
                 }

@@ -21,7 +21,6 @@ namespace UserStorageApp
         /// </summary>
         private readonly IUserRepositoryManager _userRepositoryManager;
 
-
         private readonly NotificationReceiver _receiver = new NotificationReceiver();
 
         private readonly UserStorageServiceSlave[] slaves = new UserStorageServiceSlave[2];
@@ -45,7 +44,6 @@ namespace UserStorageApp
         /// </summary>
         public void Run()
         {   
-            //_userRepositoryManager.Start();
             _userStorageService.Add(new User
             {
                 FirstName = "Alex",
@@ -73,8 +71,6 @@ namespace UserStorageApp
             {
                 Console.WriteLine($"Id: {user.Id}");
             }    
-
-            //_userRepositoryManager.Stop();
         }
     }
 }

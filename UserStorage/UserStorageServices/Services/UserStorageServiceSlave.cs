@@ -18,7 +18,7 @@ namespace UserStorageServices.Services
             IUserRepository userRepository = null) : base(validator, userRepository)
         {
             _receiver = receiver ?? new NotificationReceiver();
-            ((NotificationReceiver) _receiver).received += NotificationReceived;
+            ((NotificationReceiver)_receiver).Received += NotificationReceived;
         }
 
         public override StorageMode StorageMode => StorageMode.SlaveNode;
@@ -27,7 +27,6 @@ namespace UserStorageServices.Services
         {
             if (IsCallFromMaster())
             {
-                //Console.WriteLine("RECEIVE!");
                 Repository.Add(user);
             }
 
@@ -51,9 +50,10 @@ namespace UserStorageServices.Services
                 if (notification.Type == NotificationType.AddUser)
                 {
                     var action = notification.Action as AddUserActionNotification;
-                    if(action != null)
+                    if (action != null)
                         Add(action.User);
                 }
+
                 if (notification.Type == NotificationType.DeleteUser)
                 {
                     var action = notification.Action as DeleteUserActionNotification;
@@ -63,12 +63,11 @@ namespace UserStorageServices.Services
             }
         }
 
-
         private bool IsCallFromMaster()
         {
             var stackTrace = new StackTrace();
             var addMethod = typeof(UserStorageServiceMaster).GetMethod("Add");
-            var onUserAddedMethod = typeof(UserStorageServiceMaster).GetMethod("OnUserAdded", BindingFlags.Instance | BindingFlags.NonPublic); //как получить приватный метод из класса?
+            var onUserAddedMethod = typeof(UserStorageServiceMaster).GetMethod("OnUserAdded", BindingFlags.Instance | BindingFlags.NonPublic);
             var methods = stackTrace.GetFrames()?.Select(x => x.GetMethod());
             return methods.Contains(addMethod) || methods.Contains(onUserAddedMethod);
         }

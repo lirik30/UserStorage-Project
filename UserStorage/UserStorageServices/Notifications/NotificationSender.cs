@@ -9,6 +9,7 @@ using System.Xml.Serialization;
 
 namespace UserStorageServices.Notifications
 {
+    [Serializable]
     public class NotificationSender : INotificationSender
     {
         private readonly INotificationReceiver _receiver;

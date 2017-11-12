@@ -1,7 +1,9 @@
-﻿using UserStorageServices.Validation_exceptions;
+﻿using System;
+using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices.Validators
 {
+    [Serializable]
     public class FirstNameValidator : IUserValidator
     {
         public void Validate(User user)

@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Globalization;
+using System.Reflection;
 using UserStorageServices;
 using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Services;
+using UserStorageServices.Validators;
 
 namespace UserStorageApp
 {
@@ -34,9 +37,11 @@ namespace UserStorageApp
 
             var sender = new NotificationSender(_receiver);
 
-            slaves[0] = new UserStorageServiceSlave(receiver: _receiver);
-            slaves[1] = new UserStorageServiceSlave(receiver: _receiver);
-            _userStorageService = userStorageService ?? new UserStorageServiceMaster(userRepository: _userRepositoryManager as IUserRepository, sender: sender);
+            slaves[0] = CreateSlave(1, _receiver);
+            slaves[1] = CreateSlave(2, _receiver);
+
+            _userStorageService = userStorageService ?? CreateMaster(userRepository: _userRepositoryManager as IUserRepository,
+                sender: sender);
         }
 
         /// <summary>
@@ -71,6 +76,57 @@ namespace UserStorageApp
             {
                 Console.WriteLine($"Id: {user.Id}");
             }    
+        }
+
+        private UserStorageServiceMaster CreateMaster(
+            INotificationSender sender = null,
+            IUserRepository userRepository = null,
+            IUserValidator validator = null)
+        {
+            var domain = AppDomain.CreateDomain("Master");
+            var master = domain.CreateInstanceAndUnwrap(
+                typeof(UserStorageServiceMaster).Assembly.FullName,
+                typeof(UserStorageServiceMaster).FullName,
+                true,
+                BindingFlags.Public | BindingFlags.FlattenHierarchy |
+                BindingFlags.Instance | BindingFlags.CreateInstance | BindingFlags.NonPublic, 
+                null,
+                new object[] { sender, userRepository, validator },
+                null,
+                null);
+
+            if (master == null)
+            {
+                throw new ArgumentException("Fail in master node creation");
+            }
+
+            return (UserStorageServiceMaster)master;
+        }
+
+        private UserStorageServiceSlave CreateSlave(
+            int slaveIndex,
+            INotificationReceiver receiver = null,
+            IUserValidator validator = null,
+            IUserRepository userRepository = null)
+        {
+            var domain = AppDomain.CreateDomain("Slave" + slaveIndex);
+            var slave = domain.CreateInstanceAndUnwrap(
+                typeof(UserStorageServiceSlave).Assembly.FullName,
+                typeof(UserStorageServiceSlave).FullName,
+                true,
+                BindingFlags.Public | BindingFlags.FlattenHierarchy |
+                BindingFlags.Instance | BindingFlags.CreateInstance | BindingFlags.NonPublic, 
+                null,
+                new object[] { receiver, validator, userRepository },
+                null,
+                null);
+
+            if (slave == null)
+            {
+                throw new ArgumentException("Fail in slave node creation");
+            }
+
+            return (UserStorageServiceSlave)slave;
         }
     }
 }

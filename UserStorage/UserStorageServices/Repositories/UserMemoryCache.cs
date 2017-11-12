@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 namespace UserStorageServices.Repositories
 {
+    [Serializable]
     public class UserMemoryCache : IUserRepository
     {
         /// <summary>
@@ -30,7 +31,7 @@ namespace UserStorageServices.Repositories
 
         public IEnumerable<User> Search(Func<User, bool> predicate)
         {
-            return storage.Where(predicate);
+            return storage.Where(predicate).ToList();
         }
     }
 }

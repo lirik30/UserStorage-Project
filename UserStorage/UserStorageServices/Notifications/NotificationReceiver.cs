@@ -10,9 +10,14 @@ using System.Xml.Serialization;
 
 namespace UserStorageServices.Notifications
 {
-    public class NotificationReceiver : INotificationReceiver
+    public class NotificationReceiver : MarshalByRefObject, INotificationReceiver
     {
-        public event Action<NotificationContainer> Received = delegate { }; 
+        public event Action<NotificationContainer> Received = delegate { };
+
+        public void Subscribe(Action<NotificationContainer> action)
+        {
+            Received += action;
+        }
 
         public void Receive(string receiveString)
         {

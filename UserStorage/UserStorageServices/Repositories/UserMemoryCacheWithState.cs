@@ -7,6 +7,7 @@ using UserStorageServices.Serializers;
 
 namespace UserStorageServices.Repositories
 {
+    [Serializable]
     public class UserMemoryCacheWithState : UserMemoryCache, IUserRepositoryManager
     {
         /// <summary>

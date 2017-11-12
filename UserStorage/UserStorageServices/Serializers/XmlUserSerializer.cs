@@ -11,6 +11,7 @@ namespace UserStorageServices.Serializers
     /// <summary>
     /// Provides functionality to saving and loading users collection to the XML file
     /// </summary>
+    [Serializable]
     public class XmlUserSerializer : ISerializer<HashSet<User>>
     {
         public void Serialize(HashSet<User> users)

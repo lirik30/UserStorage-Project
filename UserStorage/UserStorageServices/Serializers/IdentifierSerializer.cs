@@ -9,6 +9,7 @@ namespace UserStorageServices.Serializers
     /// <summary>
     /// Provides functionality for the saving and loading of the last identifier
     /// </summary>
+    [Serializable]
     public class IdentifierSerializer : ISerializer<int>
     {
         /// <summary>

@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
 using System.IO;
-using System.Linq;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace UserStorageServices.Notifications
 {
-    public class NotificationReceiver : INotificationReceiver
+    public class NotificationReceiver : MarshalByRefObject, INotificationReceiver
     {
-        public event Action<NotificationContainer> Received = delegate { }; 
+        public event Action<NotificationContainer> Received = delegate { };
+
+        public void Subscribe(Action<NotificationContainer> action)
+        {
+            Received += action;
+        }
 
         public void Receive(string receiveString)
         {

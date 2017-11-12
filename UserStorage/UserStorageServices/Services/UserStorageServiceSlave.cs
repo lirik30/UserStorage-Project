@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Validators;
 
 namespace UserStorageServices.Services
 {
+    [Serializable]
     public class UserStorageServiceSlave : UserStorageServiceBase
     {
         private INotificationReceiver _receiver;
@@ -18,29 +16,29 @@ namespace UserStorageServices.Services
             IUserRepository userRepository = null) : base(validator, userRepository)
         {
             _receiver = receiver ?? new NotificationReceiver();
-            ((NotificationReceiver)_receiver).Received += NotificationReceived;
+            ((NotificationReceiver)_receiver).Subscribe(NotificationReceived);
         }
 
         public override StorageMode StorageMode => StorageMode.SlaveNode;
 
         public override void Add(User user)
         {
-            if (IsCallFromMaster())
-            {
-                Repository.Add(user);
-            }
-
-            else
-                throw new NotSupportedException();
+            throw new NotSupportedException();
         }
 
         public override void Remove(User user)
         {
-            if (IsCallFromMaster())
-                Repository.Remove(user);
+            throw new NotSupportedException();
+        }
 
-            else
-                throw new NotSupportedException();
+        public void AddFromMaster(User user)
+        {
+            Repository.Add(user);
+        }
+
+        public void RemoveFromMaster(User user)
+        {
+            Repository.Remove(user);
         }
 
         public void NotificationReceived(NotificationContainer container)
@@ -51,25 +49,16 @@ namespace UserStorageServices.Services
                 {
                     var action = notification.Action as AddUserActionNotification;
                     if (action != null)
-                        Add(action.User);
+                        AddFromMaster(action.User);
                 }
 
                 if (notification.Type == NotificationType.DeleteUser)
                 {
                     var action = notification.Action as DeleteUserActionNotification;
                     if (action != null)
-                        Remove(action.User);
+                        RemoveFromMaster(action.User);
                 }
             }
-        }
-
-        private bool IsCallFromMaster()
-        {
-            var stackTrace = new StackTrace();
-            var addMethod = typeof(UserStorageServiceMaster).GetMethod("Add");
-            var onUserAddedMethod = typeof(UserStorageServiceMaster).GetMethod("OnUserAdded", BindingFlags.Instance | BindingFlags.NonPublic);
-            var methods = stackTrace.GetFrames()?.Select(x => x.GetMethod());
-            return methods.Contains(addMethod) || methods.Contains(onUserAddedMethod);
         }
     }
 }

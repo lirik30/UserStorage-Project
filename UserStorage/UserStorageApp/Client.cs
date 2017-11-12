@@ -40,7 +40,8 @@ namespace UserStorageApp
             slaves[0] = CreateSlave(1, _receiver);
             slaves[1] = CreateSlave(2, _receiver);
 
-            _userStorageService = userStorageService ?? CreateMaster(userRepository: _userRepositoryManager as IUserRepository,
+            _userStorageService = userStorageService ?? CreateMaster(
+                userRepository: _userRepositoryManager as IUserRepository,
                 sender: sender);
         }
 
@@ -88,8 +89,7 @@ namespace UserStorageApp
                 typeof(UserStorageServiceMaster).Assembly.FullName,
                 typeof(UserStorageServiceMaster).FullName,
                 true,
-                BindingFlags.Public | BindingFlags.FlattenHierarchy |
-                BindingFlags.Instance | BindingFlags.CreateInstance | BindingFlags.NonPublic, 
+                BindingFlags.CreateInstance, 
                 null,
                 new object[] { sender, userRepository, validator },
                 null,
@@ -114,8 +114,7 @@ namespace UserStorageApp
                 typeof(UserStorageServiceSlave).Assembly.FullName,
                 typeof(UserStorageServiceSlave).FullName,
                 true,
-                BindingFlags.Public | BindingFlags.FlattenHierarchy |
-                BindingFlags.Instance | BindingFlags.CreateInstance | BindingFlags.NonPublic, 
+                BindingFlags.CreateInstance, 
                 null,
                 new object[] { receiver, validator, userRepository },
                 null,

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UserStorageServices.Notifications;
+﻿using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Validators;
 

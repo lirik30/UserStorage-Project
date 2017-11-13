@@ -14,7 +14,7 @@ namespace UserStorageApp
         {
             // Loading configuration from the application configuration file. This configuration is not used yet.
             var serviceConfiguration = (ServiceConfiguration)System.Configuration.ConfigurationManager.GetSection("serviceConfiguration");
-
+            
             using (var host = new ServiceHost(MyDiagnostics.Create(serviceConfiguration)))
             {
                 host.SmartOpen();

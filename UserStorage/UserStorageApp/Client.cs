@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Diagnostics.SymbolStore;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using UserStorageServices;
 using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Services;
 using UserStorageServices.Validators;
+using ServiceConfiguration = ServiceConfigurationSection.ServiceConfigurationSection;
 
 namespace UserStorageApp
 {
@@ -26,23 +29,36 @@ namespace UserStorageApp
 
         private readonly NotificationReceiver _receiver = new NotificationReceiver();
 
-        private readonly UserStorageServiceSlave[] slaves = new UserStorageServiceSlave[2];
+        private UserStorageServiceSlave[] slaves;
+
+        private void CreateSlaveServices()
+        {
+            var serviceConfiguration = (ServiceConfiguration)System.Configuration.ConfigurationManager.GetSection("serviceConfiguration");
+            var masterService = serviceConfiguration.ServiceInstances.SingleOrDefault(x => x.Type == "UserStorageMaster");
+            var slaveCount = masterService.Master.Count;
+            slaves = new UserStorageServiceSlave[slaveCount];
+            int i = 0;
+            foreach (var slave in masterService.Master)
+            {
+                slaves[i++] = CreateSlave(slave.Name, _receiver);
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
         /// </summary>
-        public Client(UserStorageServiceMaster userStorageService = null, IUserRepositoryManager userRepositoryManager = null)
+        public Client(IUserStorageService userStorageService = null, IUserRepositoryManager userRepositoryManager = null)
         {
             _userRepositoryManager = userRepositoryManager ?? new UserMemoryCacheWithState();
 
             var sender = new NotificationSender(_receiver);
 
-            slaves[0] = CreateSlave(1, _receiver);
-            slaves[1] = CreateSlave(2, _receiver);
+            //slaves[0] = CreateSlave(1, _receiver);
+            //slaves[1] = CreateSlave(2, _receiver);
+            CreateSlaveServices();
 
-            _userStorageService = userStorageService ?? CreateMaster(
-                userRepository: _userRepositoryManager as IUserRepository,
-                sender: sender);
+            _userStorageService = userStorageService as UserStorageServiceMaster ?? 
+                CreateMaster( userRepository: _userRepositoryManager as IUserRepository, sender: sender);
         }
 
         /// <summary>
@@ -84,7 +100,10 @@ namespace UserStorageApp
             IUserRepository userRepository = null,
             IUserValidator validator = null)
         {
-            var domain = AppDomain.CreateDomain("Master");
+            var serviceConfiguration = (ServiceConfiguration)System.Configuration.ConfigurationManager.GetSection("serviceConfiguration");
+            var masterService = serviceConfiguration.ServiceInstances.SingleOrDefault(x => x.Type == "UserStorageMaster");
+            var domainName = masterService.Name;
+            var domain = AppDomain.CreateDomain(domainName);
             var master = domain.CreateInstanceAndUnwrap(
                 typeof(UserStorageServiceMaster).Assembly.FullName,
                 typeof(UserStorageServiceMaster).FullName,
@@ -104,12 +123,12 @@ namespace UserStorageApp
         }
 
         private UserStorageServiceSlave CreateSlave(
-            int slaveIndex,
+            string domainName,
             INotificationReceiver receiver = null,
             IUserValidator validator = null,
             IUserRepository userRepository = null)
         {
-            var domain = AppDomain.CreateDomain("Slave" + slaveIndex);
+            var domain = AppDomain.CreateDomain(domainName);
             var slave = domain.CreateInstanceAndUnwrap(
                 typeof(UserStorageServiceSlave).Assembly.FullName,
                 typeof(UserStorageServiceSlave).FullName,

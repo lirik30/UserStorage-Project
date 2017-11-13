@@ -31,19 +31,6 @@ namespace UserStorageApp
 
         private UserStorageServiceSlave[] slaves;
 
-        private void CreateSlaveServices()
-        {
-            var serviceConfiguration = (ServiceConfiguration)System.Configuration.ConfigurationManager.GetSection("serviceConfiguration");
-            var masterService = serviceConfiguration.ServiceInstances.SingleOrDefault(x => x.Type == "UserStorageMaster");
-            var slaveCount = masterService.Master.Count;
-            slaves = new UserStorageServiceSlave[slaveCount];
-            int i = 0;
-            foreach (var slave in masterService.Master)
-            {
-                slaves[i++] = CreateSlave(slave.Name, _receiver);
-            }
-        }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
         /// </summary>
@@ -52,13 +39,11 @@ namespace UserStorageApp
             _userRepositoryManager = userRepositoryManager ?? new UserMemoryCacheWithState();
 
             var sender = new NotificationSender(_receiver);
-
-            //slaves[0] = CreateSlave(1, _receiver);
-            //slaves[1] = CreateSlave(2, _receiver);
+            
             CreateSlaveServices();
 
             _userStorageService = userStorageService as UserStorageServiceMaster ?? 
-                CreateMaster( userRepository: _userRepositoryManager as IUserRepository, sender: sender);
+                CreateMaster(userRepository: _userRepositoryManager as IUserRepository, sender: sender);
         }
 
         /// <summary>
@@ -120,6 +105,19 @@ namespace UserStorageApp
             }
 
             return (UserStorageServiceMaster)master;
+        }
+
+        private void CreateSlaveServices()
+        {
+            var serviceConfiguration = (ServiceConfiguration)System.Configuration.ConfigurationManager.GetSection("serviceConfiguration");
+            var masterService = serviceConfiguration.ServiceInstances.SingleOrDefault(x => x.Type == "UserStorageMaster");
+            var slaveCount = masterService.Master.Count;
+            slaves = new UserStorageServiceSlave[slaveCount];
+            int i = 0;
+            foreach (var slave in masterService.Master)
+            {
+                slaves[i++] = CreateSlave(slave.Name, _receiver);
+            }
         }
 
         private UserStorageServiceSlave CreateSlave(

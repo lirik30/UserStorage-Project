@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
+using UserStorageServices.Attributes.ValidationAttributes;
 using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices.Validators
@@ -8,8 +11,12 @@ namespace UserStorageServices.Validators
     {
         public void Validate(User user)
         {
-            if (user.Age < 0)
-                throw new AgeExceedsLimitException("Age of user must be greater than zero");
+            PropertyInfo userAgeInfo = typeof(User).GetProperty("Age");
+
+            var minMaxAttribute = userAgeInfo.GetCustomAttributes<ValidateMinMaxAttribute>().FirstOrDefault();
+            if(minMaxAttribute != null)
+                if (user.Age < minMaxAttribute.MinLimit || user.Age > minMaxAttribute.MaxLimit)
+                    throw new AgeExceedsLimitException("Age of user must be greater than zero");
         }
     }
 }

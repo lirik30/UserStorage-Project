@@ -47,6 +47,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ValidationAttributes\ValidateMinMaxAttribute.cs" />
+    <Compile Include="Attributes\ValidationAttributes\ValidateRegexAttribute.cs" />
+    <Compile Include="Attributes\ValidationAttributes\ValidateMaxLengthAttribute.cs" />
+    <Compile Include="Attributes\ValidationAttributes\ValidateNotNullOrEmptyOrWhitespaceAttribute.cs" />
     <Compile Include="Notifications\AddUserActionNotification.cs" />
     <Compile Include="Notifications\CompositeNotificationSender.cs" />
     <Compile Include="Notifications\DeleteUserActionNotification.cs" />
@@ -59,6 +63,8 @@
     <Compile Include="Notifications\NotificationType.cs" />
     <Compile Include="Repositories\IUserRepositoryManager.cs" />
     <Compile Include="Serializers\IdentifierSerializer.cs" />
+    <Compile Include="Validation exceptions\FirstNameWrongFormatException.cs" />
+    <Compile Include="Validation exceptions\LastNameWrongFormatException.cs" />
     <Compile Include="Validators\AgeValidator.cs" />
     <Compile Include="Serializers\BinaryUserSerializer.cs" />
     <Compile Include="Validators\CompositeValidator.cs" />

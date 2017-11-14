@@ -29,12 +29,13 @@ namespace UserStorageServices.Tests
         public void Add_AdditionInMasterNode_OneElementInSlaveNode()
         {
             // Arrange
+            var repository = new UserMemoryCacheWithState();
             var receiver = new NotificationReceiver();
             var sender = new NotificationSender(receiver);
 
             var slave1 = new UserStorageServiceSlave(receiver);
             var slave2 = new UserStorageServiceSlave(receiver);
-            var userStorageService = new UserStorageServiceMaster(sender: sender);
+            var userStorageService = new UserStorageServiceMaster(userRepository: repository, sender: sender);
 
             // Act
             userStorageService.Add(new User
@@ -45,8 +46,8 @@ namespace UserStorageServices.Tests
             });
             
             // Assert - slave nodes user count must increase to 1 user
-            Assert.AreEqual(1, slave1.Count);
-            Assert.AreEqual(1, slave2.Count);
+            Assert.AreEqual(repository.Count, slave1.Count);
+            Assert.AreEqual(repository.Count, slave2.Count);
         }
 
         [TestMethod]
@@ -74,6 +75,42 @@ namespace UserStorageServices.Tests
             {
                 FirstName = null,
                 LastName = "name",
+                Age = 1
+            });
+
+            // Assert - [ExpectedException]
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(FirstNameWrongFormatException))]
+        public void Add_UserFirstNameWrongFormat_ExceptionThrown()
+        {
+            // Arrange
+            var userStorageService = new UserStorageServiceMaster();
+
+            // Act
+            userStorageService.Add(new User
+            {
+                FirstName = "111",
+                LastName = "name",
+                Age = 1
+            });
+
+            // Assert - [ExpectedException]
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(LastNameWrongFormatException))]
+        public void Add_UserLastNameWrongFormat_ExceptionThrown()
+        {
+            // Arrange
+            var userStorageService = new UserStorageServiceMaster();
+
+            // Act
+            userStorageService.Add(new User
+            {
+                FirstName = "name",
+                LastName = "$24562@#%34",
                 Age = 1
             });
 
@@ -109,7 +146,7 @@ namespace UserStorageServices.Tests
             userStorageService.Add(new User
             {
                 FirstName = "name",
-                LastName = "name",
+                LastName = "Name",
                 Age = -10
             });
 
@@ -120,7 +157,8 @@ namespace UserStorageServices.Tests
         public void Add_SomeUser_SuccessfulAddition()
         {
             // Arrange
-            var userStorageService = new UserStorageServiceMaster();
+            var repository = new UserMemoryCacheWithState();
+            var userStorageService = new UserStorageServiceMaster(userRepository: repository);
 
             // Act
             userStorageService.Add(new User
@@ -145,7 +183,7 @@ namespace UserStorageServices.Tests
             });
 
             // Assert - Collection length should increase to 3 members
-            Assert.AreEqual(3, userStorageService.Count);
+            Assert.AreEqual(repository.Count, userStorageService.Count);
         }
 
         // Remove tests
@@ -418,7 +456,8 @@ namespace UserStorageServices.Tests
         public void Search_AgeIs25_TwoElements()
         {
             // Arrange
-            var userStorageService = new UserStorageServiceMaster();
+            var repository = new UserMemoryCacheWithState();
+            var userStorageService = new UserStorageServiceMaster(userRepository: repository);
             userStorageService.Add(new User
             {
                 FirstName = "Pavel",
@@ -444,7 +483,7 @@ namespace UserStorageServices.Tests
             var result = userStorageService.Search(u => u.Age == 25);
 
             // Assert - 0
-            Assert.AreEqual(result.Count(), 2);
+            Assert.AreEqual(result.Count(), repository.Search(u => u.Age == 25).Count());
         }
     }
 }

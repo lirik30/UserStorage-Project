@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using UserStorageServices;
+using UserStorageServices.Attributes.ServicesAttributes;
 using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Services;
@@ -85,8 +86,11 @@ namespace UserStorageApp
             IUserRepository userRepository = null,
             IUserValidator validator = null)
         {
+            var applicationAttr = typeof(UserStorageServiceMaster).GetCustomAttributes<ApplicationServiceAttribute>().FirstOrDefault();
+            var serviceType = applicationAttr?.ServiceType;
+
             var serviceConfiguration = (ServiceConfiguration)System.Configuration.ConfigurationManager.GetSection("serviceConfiguration");
-            var masterService = serviceConfiguration.ServiceInstances.SingleOrDefault(x => x.Type == "UserStorageMaster");
+            var masterService = serviceConfiguration.ServiceInstances.SingleOrDefault(x => x.Type == serviceType);
             var domainName = masterService.Name;
             var domain = AppDomain.CreateDomain(domainName);
             var master = domain.CreateInstanceAndUnwrap(
@@ -109,8 +113,10 @@ namespace UserStorageApp
 
         private void CreateSlaveServices()
         {
+            var applicationAttr = typeof(UserStorageServiceMaster).GetCustomAttributes<ApplicationServiceAttribute>().FirstOrDefault();
+            var serviceType = applicationAttr?.ServiceType;
             var serviceConfiguration = (ServiceConfiguration)System.Configuration.ConfigurationManager.GetSection("serviceConfiguration");
-            var masterService = serviceConfiguration.ServiceInstances.SingleOrDefault(x => x.Type == "UserStorageMaster");
+            var masterService = serviceConfiguration.ServiceInstances.SingleOrDefault(x => x.Type == serviceType);
             var slaveCount = masterService.Master.Count;
             slaves = new UserStorageServiceSlave[slaveCount];
             int i = 0;

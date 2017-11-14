@@ -47,6 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attributes\ServicesAttributes\ApplicationServiceAttribute.cs" />
     <Compile Include="Attributes\ValidationAttributes\ValidateMinMaxAttribute.cs" />
     <Compile Include="Attributes\ValidationAttributes\ValidateRegexAttribute.cs" />
     <Compile Include="Attributes\ValidationAttributes\ValidateMaxLengthAttribute.cs" />

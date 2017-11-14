@@ -1,9 +1,11 @@
-﻿using UserStorageServices.Notifications;
+﻿using UserStorageServices.Attributes.ServicesAttributes;
+using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Validators;
 
 namespace UserStorageServices.Services
 {
+    [ApplicationService("UserStorageMaster")]
     public class UserStorageServiceMaster : UserStorageServiceBase
     {
         private readonly INotificationSender _sender;

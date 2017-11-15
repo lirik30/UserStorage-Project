@@ -64,6 +64,7 @@
     <Compile Include="Notifications\NotificationType.cs" />
     <Compile Include="Repositories\IUserRepositoryManager.cs" />
     <Compile Include="Serializers\IdentifierSerializer.cs" />
+    <Compile Include="Services\ServiceFactory.cs" />
     <Compile Include="Validation exceptions\FirstNameWrongFormatException.cs" />
     <Compile Include="Validation exceptions\LastNameWrongFormatException.cs" />
     <Compile Include="Validators\AgeValidator.cs" />
@@ -91,6 +92,12 @@
     <Compile Include="Validation exceptions\LastNameIsNullOrEmptyException.cs" />
     <Compile Include="Validation exceptions\UserIsNullException.cs" />
     <Compile Include="Serializers\XmlUserSerializer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ServiceConfigurationSection\ServiceConfigurationSection.csproj">
+      <Project>{527b8ca4-574a-4234-8918-73cdc992b3da}</Project>
+      <Name>ServiceConfigurationSection</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

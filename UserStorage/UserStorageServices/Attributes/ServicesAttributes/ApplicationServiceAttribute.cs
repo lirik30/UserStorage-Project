@@ -8,11 +8,11 @@ namespace UserStorageServices.Attributes.ServicesAttributes
 {
     public class ApplicationServiceAttribute : Attribute
     {
-        public string ServiceType { get; }
-
         public ApplicationServiceAttribute(string serviceType)
         {
             ServiceType = serviceType;
         }
+
+        public string ServiceType { get; }
     }
 }

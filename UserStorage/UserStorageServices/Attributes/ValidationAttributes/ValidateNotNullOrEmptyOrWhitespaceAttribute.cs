@@ -9,7 +9,7 @@ namespace UserStorageServices.Attributes.ValidationAttributes
     {
         public void Validate(User user)
         {
-            if(string.IsNullOrWhiteSpace(user.FirstName))
+            if (string.IsNullOrWhiteSpace(user.FirstName))
                 throw new FirstNameIsNullOrEmptyException("First name of user is null or empty or whitespace");
 
             if (string.IsNullOrWhiteSpace(user.LastName))

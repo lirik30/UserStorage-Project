@@ -8,12 +8,12 @@ namespace UserStorageServices.Attributes.ValidationAttributes
     [AttributeUsage(AttributeTargets.Property)]
     public class ValidateRegexAttribute : Attribute, IUserValidator
     {
-        public string RegexString { get; }
-
         public ValidateRegexAttribute(string regexString)
         {
             RegexString = regexString;
         }
+
+        public string RegexString { get; }
 
         public void Validate(User user)
         {

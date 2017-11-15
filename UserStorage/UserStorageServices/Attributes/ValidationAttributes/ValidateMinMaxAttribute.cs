@@ -7,14 +7,15 @@ namespace UserStorageServices.Attributes.ValidationAttributes
     [AttributeUsage(AttributeTargets.Property)]
     public class ValidateMinMaxAttribute : Attribute, IUserValidator
     {
-        public int MinLimit { get; }
-        public int MaxLimit { get; }
-
         public ValidateMinMaxAttribute(int minLimit, int maxLimit)
         {
             MinLimit = minLimit;
             MaxLimit = maxLimit;
         }
+
+        public int MinLimit { get; }
+
+        public int MaxLimit { get; }
 
         public void Validate(User user)
         {

@@ -35,7 +35,7 @@ namespace UserStorageApp
         {
             _userRepositoryManager = userRepositoryManager ?? new UserMemoryCacheWithState();
             
-            _userStorageService = userStorageService as UserStorageServiceMaster??
+            _userStorageService = userStorageService as UserStorageServiceMaster ??
                                   ServiceFactory.CreateService(_userRepositoryManager as IUserRepository) as UserStorageServiceMaster;
         }
 
@@ -64,8 +64,6 @@ namespace UserStorageApp
             });
 
             Console.WriteLine(_userStorageService.Count);
-            //Console.WriteLine(slaves[0].Count);
-            //Console.WriteLine(slaves[1].Count);
 
             foreach (var user in _userStorageService.Search(x => x.FirstName != null))
             {

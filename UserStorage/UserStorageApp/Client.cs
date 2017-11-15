@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using UserStorageServices;
+using UserStorageServices.Attributes.ServicesAttributes;
 using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Services;
@@ -27,23 +28,15 @@ namespace UserStorageApp
         /// </summary>
         private readonly IUserRepositoryManager _userRepositoryManager;
 
-        private readonly NotificationReceiver _receiver = new NotificationReceiver();
-
-        private UserStorageServiceSlave[] slaves;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="Client"/> class.
         /// </summary>
         public Client(IUserStorageService userStorageService = null, IUserRepositoryManager userRepositoryManager = null)
         {
             _userRepositoryManager = userRepositoryManager ?? new UserMemoryCacheWithState();
-
-            var sender = new NotificationSender(_receiver);
             
-            CreateSlaveServices();
-
-            _userStorageService = userStorageService as UserStorageServiceMaster ?? 
-                CreateMaster(userRepository: _userRepositoryManager as IUserRepository, sender: sender);
+            _userStorageService = userStorageService as UserStorageServiceMaster ??
+                                  ServiceFactory.CreateService(_userRepositoryManager as IUserRepository) as UserStorageServiceMaster;
         }
 
         /// <summary>
@@ -71,78 +64,11 @@ namespace UserStorageApp
             });
 
             Console.WriteLine(_userStorageService.Count);
-            Console.WriteLine(slaves[0].Count);
-            Console.WriteLine(slaves[1].Count);
 
             foreach (var user in _userStorageService.Search(x => x.FirstName != null))
             {
                 Console.WriteLine($"Id: {user.Id}");
             }    
-        }
-
-        private UserStorageServiceMaster CreateMaster(
-            INotificationSender sender = null,
-            IUserRepository userRepository = null,
-            IUserValidator validator = null)
-        {
-            var serviceConfiguration = (ServiceConfiguration)System.Configuration.ConfigurationManager.GetSection("serviceConfiguration");
-            var masterService = serviceConfiguration.ServiceInstances.SingleOrDefault(x => x.Type == "UserStorageMaster");
-            var domainName = masterService.Name;
-            var domain = AppDomain.CreateDomain(domainName);
-            var master = domain.CreateInstanceAndUnwrap(
-                typeof(UserStorageServiceMaster).Assembly.FullName,
-                typeof(UserStorageServiceMaster).FullName,
-                true,
-                BindingFlags.CreateInstance, 
-                null,
-                new object[] { sender, userRepository, validator },
-                null,
-                null);
-
-            if (master == null)
-            {
-                throw new ArgumentException("Fail in master node creation");
-            }
-
-            return (UserStorageServiceMaster)master;
-        }
-
-        private void CreateSlaveServices()
-        {
-            var serviceConfiguration = (ServiceConfiguration)System.Configuration.ConfigurationManager.GetSection("serviceConfiguration");
-            var masterService = serviceConfiguration.ServiceInstances.SingleOrDefault(x => x.Type == "UserStorageMaster");
-            var slaveCount = masterService.Master.Count;
-            slaves = new UserStorageServiceSlave[slaveCount];
-            int i = 0;
-            foreach (var slave in masterService.Master)
-            {
-                slaves[i++] = CreateSlave(slave.Name, _receiver);
-            }
-        }
-
-        private UserStorageServiceSlave CreateSlave(
-            string domainName,
-            INotificationReceiver receiver = null,
-            IUserValidator validator = null,
-            IUserRepository userRepository = null)
-        {
-            var domain = AppDomain.CreateDomain(domainName);
-            var slave = domain.CreateInstanceAndUnwrap(
-                typeof(UserStorageServiceSlave).Assembly.FullName,
-                typeof(UserStorageServiceSlave).FullName,
-                true,
-                BindingFlags.CreateInstance, 
-                null,
-                new object[] { receiver, validator, userRepository },
-                null,
-                null);
-
-            if (slave == null)
-            {
-                throw new ArgumentException("Fail in slave node creation");
-            }
-
-            return (UserStorageServiceSlave)slave;
         }
     }
 }

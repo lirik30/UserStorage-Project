@@ -1,4 +1,5 @@
 ﻿using System;
+using UserStorageServices.Attributes.ServicesAttributes;
 using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Validators;
@@ -6,6 +7,7 @@ using UserStorageServices.Validators;
 namespace UserStorageServices.Services
 {
     [Serializable]
+    [ApplicationService("UserStorageSlave")]
     public class UserStorageServiceSlave : UserStorageServiceBase
     {
         private INotificationReceiver _receiver;

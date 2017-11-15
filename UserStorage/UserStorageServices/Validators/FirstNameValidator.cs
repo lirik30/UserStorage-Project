@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
+using System.Text.RegularExpressions;
+using UserStorageServices.Attributes.ValidationAttributes;
 using UserStorageServices.Validation_exceptions;
 
 namespace UserStorageServices.Validators
@@ -8,11 +12,13 @@ namespace UserStorageServices.Validators
     {
         public void Validate(User user)
         {
-            if (string.IsNullOrWhiteSpace(user.FirstName))
-                throw new FirstNameIsNullOrEmptyException("FirstName is null or empty or whitespace");
-
-            if (user.FirstName.Length > 50)
-                throw new FirstNameExceedsLimitException("First name of user must be less than 50 symbols");
+            PropertyInfo userFirstNameInfo = typeof(User).GetProperty("FirstName");
+            
+            var validateAttributes = userFirstNameInfo.GetCustomAttributes();
+            foreach (var attribute in validateAttributes)
+            {
+                (attribute as IUserValidator)?.Validate(user);
+            }
         }
     }
 }

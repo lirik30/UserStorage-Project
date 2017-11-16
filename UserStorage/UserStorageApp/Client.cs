@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Diagnostics.SymbolStore;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
 using UserStorageServices;
-using UserStorageServices.Attributes.ServicesAttributes;
-using UserStorageServices.Notifications;
 using UserStorageServices.Repositories;
 using UserStorageServices.Services;
-using UserStorageServices.Validators;
 using ServiceConfiguration = ServiceConfigurationSection.ServiceConfigurationSection;
 
 namespace UserStorageApp

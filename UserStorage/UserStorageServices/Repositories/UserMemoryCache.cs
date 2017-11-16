@@ -12,18 +12,26 @@ namespace UserStorageServices.Repositories
         /// </summary>
         protected HashSet<User> storage = new HashSet<User>();
 
+        private object _lockObject = new Object();
+
         public int PreviousIdentifier { get; set; }
 
         public int Count => storage.Count;
 
         public void Add(User user)
         {
-            storage.Add(user);
+            lock (_lockObject)
+            {
+                storage.Add(user);
+            }
         }
 
         public void Remove(User user)
         {
-            storage.Remove(user);
+            lock (_lockObject)
+            {
+                storage.Remove(user);
+            }
         }
 
         public IEnumerable<User> Search(Func<User, bool> predicate)

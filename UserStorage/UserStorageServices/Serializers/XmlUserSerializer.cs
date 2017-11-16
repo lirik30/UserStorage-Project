@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Runtime.Serialization;
+using System.Threading;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -18,8 +19,9 @@ namespace UserStorageServices.Serializers
         {
             if (users == null)
                 throw new InvalidOperationException();
-
+            
             var path = ConfigurationManager.AppSettings["RepositoryXmlDataFile"];
+            
             var fs = new FileStream(path, FileMode.Create);
             try
             {

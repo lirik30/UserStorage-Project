@@ -532,17 +532,17 @@ Run tests, review, commit.
 
 ## Step 11 - Synchronize
 
-- [ ] New branch "step11".
+- [x] New branch "step11".
 
-- [ ] The collection in your repository is going to be used in multi-threading environment, and this may lead to concurrency issues. Make your repository thread-safe using [lock statement](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/lock-statement).
-
-Run tests, review and commit.
-
-- [ ] Make your repository thread-safe using [ReaderWriterLockSlim class](https://docs.microsoft.com/en-us/dotnet/standard/threading/reader-writer-locks).
+- [x] The collection in your repository is going to be used in multi-threading environment, and this may lead to concurrency issues. Make your repository thread-safe using [lock statement](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/lock-statement).
 
 Run tests, review and commit.
 
-- [ ] Run StyleCop, fix issues, commit. Mark, commit. Publish "step11". Merge "step11" into master. Publish.
+- [x] Make your repository thread-safe using [ReaderWriterLockSlim class](https://docs.microsoft.com/en-us/dotnet/standard/threading/reader-writer-locks).
+
+Run tests, review and commit.
+
+- [x] Run StyleCop, fix issues, commit. Mark, commit. Publish "step11". Merge "step11" into master. Publish.
 
 
 ## Step 12 - WCF

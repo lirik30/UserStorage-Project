@@ -27,8 +27,19 @@ namespace UserStorageServices.Repositories
         /// </summary>
         public void Start()
         {
-            PreviousIdentifier = _identifierSerializer.Deserialize();
-            foreach (var user in _serializer.Deserialize())
+            _lock.EnterWriteLock();
+            var users = new HashSet<User>();
+            try
+            {
+                PreviousIdentifier = _identifierSerializer.Deserialize();
+                users = _serializer.Deserialize();
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+
+            foreach (var user in users)
             {
                 Add(user);
             }
@@ -39,8 +50,16 @@ namespace UserStorageServices.Repositories
         /// </summary>
         public void Stop()
         {
-            _identifierSerializer.Serialize(PreviousIdentifier);
-            _serializer.Serialize(storage);
+            _lock.EnterWriteLock();
+            try
+            {
+                _identifierSerializer.Serialize(PreviousIdentifier);
+                _serializer.Serialize(storage);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
     }
 }

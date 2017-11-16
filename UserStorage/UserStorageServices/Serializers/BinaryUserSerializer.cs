@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Threading;
 
 namespace UserStorageServices.Serializers
 {
@@ -18,6 +19,7 @@ namespace UserStorageServices.Serializers
                 throw new InvalidOperationException();
 
             var path = ConfigurationManager.AppSettings["RepositoryBinDataFile"];
+            
             var fs = new FileStream(path, FileMode.Create);
             try
             {

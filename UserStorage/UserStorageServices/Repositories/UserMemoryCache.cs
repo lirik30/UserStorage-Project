@@ -1,18 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace UserStorageServices.Repositories
 {
-    [Serializable]
-    public class UserMemoryCache : IUserRepository
+    public class UserMemoryCache : MarshalByRefObject, IUserRepository
     {
         /// <summary>
         /// User store
         /// </summary>
         protected HashSet<User> storage = new HashSet<User>();
 
-        private object _lockObject = new Object();
+        //private object _lockObject = new Object();
+
+        protected ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
 
         public int PreviousIdentifier { get; set; }
 
@@ -20,23 +22,46 @@ namespace UserStorageServices.Repositories
 
         public void Add(User user)
         {
-            lock (_lockObject)
+            _lock.EnterWriteLock();
+            try
             {
                 storage.Add(user);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
             }
         }
 
         public void Remove(User user)
         {
-            lock (_lockObject)
+            _lock.EnterWriteLock();
+            try
             {
                 storage.Remove(user);
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
             }
         }
 
         public IEnumerable<User> Search(Func<User, bool> predicate)
         {
-            return storage.Where(predicate).ToList();
+            _lock.EnterReadLock();
+            try
+            {
+                return storage.Where(predicate).ToList();
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+        }
+
+        ~UserMemoryCache()
+        {
+            _lock.Dispose();
         }
     }
 }

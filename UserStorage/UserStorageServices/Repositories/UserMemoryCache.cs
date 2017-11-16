@@ -12,9 +12,12 @@ namespace UserStorageServices.Repositories
         /// </summary>
         protected HashSet<User> storage = new HashSet<User>();
 
-        //private object _lockObject = new Object();
-
         protected ReaderWriterLockSlim _lock = new ReaderWriterLockSlim();
+
+        ~UserMemoryCache()
+        {
+            _lock.Dispose();
+        }
 
         public int PreviousIdentifier { get; set; }
 
@@ -57,11 +60,6 @@ namespace UserStorageServices.Repositories
             {
                 _lock.ExitReadLock();
             }
-        }
-
-        ~UserMemoryCache()
-        {
-            _lock.Dispose();
         }
     }
 }

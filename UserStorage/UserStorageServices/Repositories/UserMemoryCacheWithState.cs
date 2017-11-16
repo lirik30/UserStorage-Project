@@ -38,6 +38,7 @@ namespace UserStorageServices.Repositories
             {
                 _lock.ExitWriteLock();
             }
+
             foreach (var user in users)
             {
                 Add(user);
